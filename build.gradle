@@ -1,0 +1,16 @@
+group 'com.zpi'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'com.sparkjava:spark-core:2.3'
+    compile 'com.sparkjava:spark-template-freemarker:2.3'
+    compile 'org.mongodb:mongo-java-driver:3.0.2'
+    testCompile 'junit:junit:4.11'
+}
