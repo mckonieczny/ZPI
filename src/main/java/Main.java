@@ -4,6 +4,7 @@ import spark.template.freemarker.FreeMarkerEngine;
 import java.util.HashMap;
 import java.util.Map;
 
+import static server.SparkUtils.getHerokuAssignedPort;
 import static server.SparkUtils.renderContent;
 import static spark.Spark.get;
 import static spark.Spark.port;
@@ -33,13 +34,7 @@ public class Main {
 
     }
 
-    static int getHerokuAssignedPort() {
-        ProcessBuilder processBuilder = new ProcessBuilder();
-        if (processBuilder.environment().get("PORT") != null) {
-            return Integer.parseInt(processBuilder.environment().get("PORT"));
-        }
-        return 4567; //return default port if heroku-port isn't set (i.e. on localhost)
-    }
+
 
 
 }
