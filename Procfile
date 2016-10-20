@@ -1,1 +1,1 @@
-web: java -Dserver.port=4567 -jar build/libs/com.zpi-1.0-SNAPSHOT.jar
+web: java -Dserver.port=4567 -jar build/libs/MongoTest-1.0-SNAPSHOT.jar
