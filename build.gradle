@@ -1,8 +1,13 @@
 group 'com.zpi'
-version '1.0-SNAPSHOT'
 
 apply plugin: 'java'
+apply plugin: 'application'
 apply plugin: 'idea'
+
+archivesBaseName = "zpi"
+version '1.0'
+applicationName = "zpi"
+mainClassName = "Main"
 
 repositories {
     mavenCentral()
@@ -15,6 +20,5 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
-task stage {
-    dependsOn clean, build
-}
+defaultTasks = ['clean']
+task stage(dependsOn: ['clean', 'installApp'])

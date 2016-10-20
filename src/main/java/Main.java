@@ -16,8 +16,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        staticFileLocation("/public");
         port(getHerokuAssignedPort());
+        staticFileLocation("/public");
 
         get("/hello", (req, res) -> "Hello Heroku World");
 
