@@ -1,5 +1,6 @@
 package server;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -26,12 +27,12 @@ public class SparkUtils {
 
     private static String renderDeployedContent(String htmlFile) {
         try {
-            URL url = new URL(DEPLOYED_RESOURCES_PATH + htmlFile);
-            System.out.println(url.toString());
-            Path path = Paths.get(url.toURI());
+            File file = new File(DEPLOYED_RESOURCES_PATH + htmlFile);
+            System.out.println(file.toString());
+            Path path = file.toPath();
             System.out.println(path.toString());
             return new String(Files.readAllBytes(path), Charset.defaultCharset());
-        } catch (IOException | URISyntaxException e) {}
+        } catch (IOException e) {}
         System.out.println("error");
         return null;
     }
