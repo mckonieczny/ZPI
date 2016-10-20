@@ -14,3 +14,7 @@ dependencies {
     compile 'org.mongodb:mongo-java-driver:3.0.2'
     testCompile 'junit:junit:4.11'
 }
+
+task stage {
+    dependsOn clean, build
+}
