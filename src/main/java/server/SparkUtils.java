@@ -27,9 +27,12 @@ public class SparkUtils {
     private static String renderDeployedContent(String htmlFile) {
         try {
             URL url = new URL(DEPLOYED_RESOURCES_PATH + htmlFile);
+            System.out.println(url.toString());
             Path path = Paths.get(url.toURI());
+            System.out.println(path.toString());
             return new String(Files.readAllBytes(path), Charset.defaultCharset());
         } catch (IOException | URISyntaxException e) {}
+        System.out.println("error");
         return null;
     }
 
