@@ -14,7 +14,7 @@ import java.nio.file.Paths;
 public class SparkUtils {
 
     private static boolean DEPLOYED = false;
-    private static String DEPLOYED_RESOURCES_PATH = "/app/build/resources/main/html/";
+    private static String DEPLOYED_RESOURCES_PATH = "/app/build/resources/main";
 
     public static String renderContent(String htmlFile) {
         if(isDeployed()) {
