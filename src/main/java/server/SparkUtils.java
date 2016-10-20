@@ -28,12 +28,9 @@ public class SparkUtils {
     private static String renderDeployedContent(String htmlFile) {
         try {
             File file = new File(DEPLOYED_RESOURCES_PATH + htmlFile);
-            System.out.println(file.toString());
             Path path = file.toPath();
-            System.out.println(path.toString());
             return new String(Files.readAllBytes(path), Charset.defaultCharset());
         } catch (IOException e) {}
-        System.out.println("error");
         return null;
     }
 
