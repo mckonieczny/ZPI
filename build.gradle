@@ -15,10 +15,6 @@ dependencies {
     testCompile 'junit:junit:4.11'
 }
 
-task callCL(type: Exec) {
-    commandLine 'export TERM=${TERM:-dumb}'
-}
-
 task stage {
-    dependsOn clean, callCL, build
+    dependsOn clean, build
 }
