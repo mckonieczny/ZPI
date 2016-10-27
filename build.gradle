@@ -17,6 +17,12 @@ apply plugin: 'idea'
 apply plugin: 'war'
 apply plugin: "com.moowork.node"
 
+node {
+    version = '7.0.0'
+    npmVersion = '3.10.8'
+    download = true
+}
+
 archivesBaseName = "zpi"
 version '1.0'
 applicationName = "zpi"
