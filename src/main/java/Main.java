@@ -32,6 +32,11 @@ public class Main {
             return new ModelAndView(model, "template.ftl");
         }, new FreeMarkerEngine());
 
+        get("/", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            return new ModelAndView(model, "index.ftl");
+        }, new FreeMarkerEngine());
+
     }
 
 
