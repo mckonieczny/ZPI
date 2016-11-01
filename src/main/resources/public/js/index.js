@@ -1,1 +1,1 @@
-alert('js loaded');
+console.log('js loaded');

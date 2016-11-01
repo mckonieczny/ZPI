@@ -15,7 +15,7 @@ import static database.document.CardDocument.M_DECK_ID;
  */
 public class CardRepository extends MongoRepository<CardDocument> {
 
-    private final static String C_CARDS = "cards";
+    public final static String C_CARDS = "cards";
 
 
     public CardRepository() {

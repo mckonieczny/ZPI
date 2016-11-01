@@ -20,8 +20,7 @@ public class MongoConnection {
 
 
     private MongoConnection() {
-        MongoClientURI uri = new MongoClientURI("mongodb://"+MONGO_USERNAME+":"+MONGO_PASSWORD+"@"+MONGO_URL+":"+MONGO_PORT+"/"+MONGO_DATABASE);
-        mongo = new MongoClient(uri);
+        mongo = getMongoClient();
         db = mongo.getDatabase(MONGO_DATABASE);
     }
 
@@ -33,6 +32,11 @@ public class MongoConnection {
     public static void close() {
         instance.mongo.close();
         instance = null;
+    }
+
+    public static MongoClient getMongoClient() {
+        MongoClientURI uri = new MongoClientURI("mongodb://"+MONGO_USERNAME+":"+MONGO_PASSWORD+"@"+MONGO_URL+":"+MONGO_PORT+"/"+MONGO_DATABASE);
+        return new MongoClient(uri);
     }
 
     public MongoCollection<Document> getCollection(String collectionName) {

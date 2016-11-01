@@ -12,7 +12,7 @@ import static database.document.UserDocument.M_USERNAME;
  */
 public class UserRepository extends MongoRepository<UserDocument> {
 
-    private final static String C_USER = "users";
+    public final static String C_USER = "users";
 
 
     public UserRepository() {

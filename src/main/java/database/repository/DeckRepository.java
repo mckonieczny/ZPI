@@ -14,7 +14,7 @@ import static com.mongodb.client.model.Filters.eq;
  */
 public class DeckRepository extends MongoRepository<DeckDocument> {
 
-    private final static String C_DECKS = "decks";
+    public final static String C_DECKS = "decks";
 
 
     public DeckRepository() {
