@@ -21,14 +21,26 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
         super(C_DECKS);
     }
 
+    public List<DeckDocument> findAll() {
+
+        List<DeckDocument> decks = new ArrayList<>();
+        getCollection()
+                .find()
+                .map(card -> new DeckDocument((Document) card))
+                .into(decks);
+
+        return decks;
+    }
+
     public List<DeckDocument> findByOwnerId(String ownerId) {
-        List<DeckDocument> cards = new ArrayList<>();
+
+        List<DeckDocument> decks = new ArrayList<>();
         getCollection()
                 .find(eq(DeckDocument.M_OWNER_ID, ownerId))
                 .map(card -> new DeckDocument((Document) card))
-                .into(cards);
+                .into(decks);
 
-        return cards;
+        return decks;
     }
 
 }

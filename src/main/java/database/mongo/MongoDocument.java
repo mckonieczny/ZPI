@@ -25,7 +25,13 @@ public abstract class MongoDocument {
         return document;
     }
 
-    public ObjectId getId() {
+    public ObjectId getObjectId() {
         return (ObjectId) document.get(M_ID);
     }
+
+    public String getId() {
+        return getObjectId().toString();
+    }
+
+    public String toJson() {return document.toJson();}
 }

@@ -1,14 +1,15 @@
+import database.repository.CardRepository;
+import database.repository.DeckRepository;
 import spark.ModelAndView;
 import spark.template.freemarker.FreeMarkerEngine;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static database.mongo.MongoUtils.toJson;
 import static server.SparkUtils.getHerokuAssignedPort;
 import static server.SparkUtils.renderContent;
-import static spark.Spark.get;
-import static spark.Spark.port;
-import static spark.Spark.staticFileLocation;
+import static spark.Spark.*;
 
 /**
  * Created by DjKonik on 2016-10-06.
@@ -36,6 +37,9 @@ public class Main {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "index.ftl");
         }, new FreeMarkerEngine());
+
+        get("/api/decks", (req, res) -> toJson(new DeckRepository().findAll()));
+        get("/api/decks/:id", (req, res) -> toJson(new CardRepository().findByDeckId(req.params(":id"))));
 
     }
 

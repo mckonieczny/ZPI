@@ -11,6 +11,8 @@ public class DeckDocument extends MongoDocument {
 
     public final static String M_OWNER_ID = "ownerId";
     public final static String M_NAME = "name";
+    public final static String M_DESCRIPTION = "description";
+    public final static String M_DIFFICULTY = "difficulty";
     public final static String M_SIZE = "size";
 
 
@@ -18,9 +20,15 @@ public class DeckDocument extends MongoDocument {
         super(document);
     }
 
-    public DeckDocument(String ownerId, String name) {
+    public DeckDocument(String ownerId, String name, int difficulty) {
+        this(ownerId, name, "", difficulty);
+    }
+
+    public DeckDocument(String ownerId, String name, String description, int difficulty) {
         setOwnerId(ownerId);
         setName(name);
+        setDescription(description);
+        setDifficulty(difficulty);
         setSize(0);
     }
 
@@ -38,6 +46,22 @@ public class DeckDocument extends MongoDocument {
 
     public void setName(String name) {
         getDocument().put(M_NAME, name);
+    }
+
+    public String getDescription() {
+        return getDocument().getString(M_DESCRIPTION);
+    }
+
+    public void setDescription(String description) {
+        getDocument().put(M_DESCRIPTION, description);
+    }
+
+    public int getDifficulty() {
+        return getDocument().getInteger(M_DIFFICULTY);
+    }
+
+    public void setDifficulty(int difficulty) {
+        getDocument().put(M_DIFFICULTY, difficulty);
     }
 
     public int getSize() {
