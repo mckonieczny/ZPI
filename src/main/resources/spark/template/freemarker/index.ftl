@@ -3,9 +3,9 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <link rel="shortcut icon" href="/favicon.ico"/>
-    <link href='http://fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'/>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet"/>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"/>
+    <link href='//fonts.googleapis.com/css?family=Dancing+Script' rel='stylesheet' type='text/css'/>
+    <link href="//fonts.googleapis.com/css?family=Roboto:300" rel="stylesheet"/>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap.min.css"/>
 
     <title>React App</title>
 </head>

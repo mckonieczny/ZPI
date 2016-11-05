@@ -43,6 +43,10 @@ public class Main {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "index.ftl");
         }, templateEngine());
+        redirect.get("/home", "/");
+        redirect.get("/addDeck", "/");
+        redirect.get("/decks", "/");
+        redirect.get("/deck/:deckId", "/");
 
         before("/private", new SecurityFilter(loginHandler.getConfig(), "loginForm"));
         get("/private", (req, res) -> {
