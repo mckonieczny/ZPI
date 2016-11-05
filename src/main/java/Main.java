@@ -39,14 +39,11 @@ public class Main {
             return new ModelAndView(model, "template.ftl");
         }, templateEngine());
 
-        get("/", (req, res) -> {
-            Map<String, Object> model = new HashMap<>();
-            return new ModelAndView(model, "index.ftl");
-        }, templateEngine());
-        redirect.get("/home", "/");
-        redirect.get("/addDeck", "/");
-        redirect.get("/decks", "/");
-        redirect.get("/deck/:deckId", "/");
+        get("/", (req, res) -> getReactPage(), templateEngine());
+        get("/home", (req, res) -> getReactPage(), templateEngine());
+        get("/addDeck", (req, res) -> getReactPage(), templateEngine());
+        get("/decks", (req, res) -> getReactPage(), templateEngine());
+        get("/deck/:deckId", (req, res) -> getReactPage(), templateEngine());
 
         before("/private", new SecurityFilter(loginHandler.getConfig(), "loginForm"));
         get("/private", (req, res) -> {
@@ -80,6 +77,11 @@ public class Main {
 
             return new ModelAndView(model, "register.ftl");
         }, templateEngine());
+    }
+
+    private static ModelAndView getReactPage() {
+        Map<String, Object> model = new HashMap<>();
+        return new ModelAndView(model, "index.ftl");
     }
 
 }
