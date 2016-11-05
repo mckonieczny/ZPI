@@ -1,4 +1,4 @@
-package server;
+package security;
 
 import com.mongodb.MongoClient;
 import org.pac4j.core.client.Clients;
@@ -6,7 +6,6 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
 import org.pac4j.http.client.indirect.FormClient;
 import org.pac4j.mongo.credentials.authenticator.MongoAuthenticator;
-import spark.TemplateEngine;
 
 import static database.document.UserDocument.M_PASSWORD;
 import static database.document.UserDocument.M_USERNAME;
@@ -20,22 +19,26 @@ import static database.repository.UserRepository.C_USER;
  */
 public class SecurityConfig implements ConfigFactory {
 
-    private TemplateEngine templateEngine;
+    public final static String FORM_CLIENT = "FormClient";
 
-    public SecurityConfig(TemplateEngine templateEngine) {
-
-        this.templateEngine = templateEngine;
-    }
+    public final static String URL_CALLBACK = "/callback";
+    public final static String URL_LOGIN_FORM = "/login";
+    public final static String URL_LOGIN_REST_API = "/api/login";
+    public final static String URL_LOGGED_USER_REST_API = "/api/user";
+    public final static String URL_LOGOUT = "/callback";
 
     @Override
     public Config build() {
 
-        FormClient formClient = new FormClient("/login", getMongoAuthenticator());
-        Clients clients = new Clients("/callback", formClient);
+        //FormClient formClient = new FormClient(URL_LOGIN_FORM, getMongoAuthenticator());
+        FormClient formClient = new FormClient(URL_LOGIN_REST_API, getMongoAuthenticator());
+
+        Clients clients = new Clients(URL_CALLBACK, formClient);
 
         Config config = new Config(clients);
         //config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
-        config.setHttpActionAdapter(new SecurityHttpActionAdapter(templateEngine));
+        config.setHttpActionAdapter(new SecurityHttpActionAdapter());
+
         return config;
     }
 

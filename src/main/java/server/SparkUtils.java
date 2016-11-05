@@ -1,5 +1,8 @@
 package server;
 
+import spark.TemplateEngine;
+import spark.template.freemarker.FreeMarkerEngine;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -17,12 +20,19 @@ public class SparkUtils {
     private static boolean DEPLOYED = false;
     private static String DEPLOYED_RESOURCES_PATH = "/app/build/resources/main";
 
+    private final static TemplateEngine templateEngine = new FreeMarkerEngine();
+
     public static String renderContent(String htmlFile) {
         if(isDeployed()) {
             return renderDeployedContent(htmlFile);
         } else {
             return renderLocalContent(htmlFile);
         }
+    }
+
+    public static TemplateEngine templateEngine() {
+
+        return templateEngine;
     }
 
     private static String renderDeployedContent(String htmlFile) {
