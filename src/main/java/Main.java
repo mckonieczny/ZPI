@@ -1,7 +1,10 @@
+import database.document.UserDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
+import database.repository.UserRepository;
 import org.pac4j.sparkjava.SecurityFilter;
-import security.SecurityLoginHandler;
+import security.LoginHandler;
+import security.PasswordHash;
 import spark.ModelAndView;
 
 import java.util.HashMap;
@@ -21,7 +24,7 @@ public class Main {
         port(getHerokuAssignedPort());
         staticFileLocation("/public");
 
-        SecurityLoginHandler loginHandler = new SecurityLoginHandler();
+        LoginHandler loginHandler = new LoginHandler();
         //loginHandler.setLoginForm();
         loginHandler.setLoginRestApi();
 
@@ -50,6 +53,29 @@ public class Main {
         get("/api/decks", (req, res) -> toJson(new DeckRepository().findAll()));
         get("/api/decks/:id", (req, res) -> toJson(new CardRepository().findByDeckId(req.params(":id"))));
 
+        get("/register", (req, res) -> {
+            Map<String, Object> model = new HashMap<>();
+            return new ModelAndView(model, "register.ftl");
+        }, templateEngine());
+
+        post("/register", (req, res) -> {
+
+            Map<String, Object> model = new HashMap<>();
+
+            UserRepository userRepository = new UserRepository();
+
+            String username = req.queryParams("username");
+            String password = req.queryParams("password");
+
+            if(userRepository.findByName(username).isEmpty()) {
+                userRepository.save(new UserDocument(username, PasswordHash.createHash(password)));
+                model.put("msg", "Dodano użytkownika " + username);
+            } else {
+                model.put("msg", "Użytkownik " + username + " już istnieje");
+            }
+
+            return new ModelAndView(model, "register.ftl");
+        }, templateEngine());
     }
 
 }

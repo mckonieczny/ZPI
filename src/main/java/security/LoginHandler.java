@@ -22,7 +22,7 @@ import static spark.Spark.*;
 /**
  * Created by DjKonik on 2016-11-05.
  */
-public class SecurityLoginHandler {
+public class LoginHandler {
 
     private static final String LOGIN_VIEW = "login/login.ftl";
     private static final String LOGGED_USER_VIEW = "login/user.ftl";
@@ -32,7 +32,7 @@ public class SecurityLoginHandler {
     private Config config;
     private Route callback;
 
-    public SecurityLoginHandler() {
+    public LoginHandler() {
 
         config =  new SecurityConfig().build();
         callback = new CallbackRoute(config);

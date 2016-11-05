@@ -29,6 +29,10 @@ public abstract class MongoDocument {
         return (ObjectId) document.get(M_ID);
     }
 
+    public boolean isEmpty() {
+        return document == null;
+    }
+
     public String getId() {
         return getObjectId().toString();
     }

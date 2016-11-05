@@ -40,6 +40,7 @@ dependencies {
     compile 'org.pac4j:pac4j-http:1.9.3'
     compile 'org.pac4j:pac4j-mongo:1.9.3'
     compile 'org.pac4j:spark-pac4j:1.2.2'
+    compile 'de.rtner:PBKDF2:1.1.0'
     testCompile 'junit:junit:4.11'
 }
 

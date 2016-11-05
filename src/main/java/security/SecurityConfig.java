@@ -25,7 +25,7 @@ public class SecurityConfig implements ConfigFactory {
     public final static String URL_LOGIN_FORM = "/login";
     public final static String URL_LOGIN_REST_API = "/api/login";
     public final static String URL_LOGGED_USER_REST_API = "/api/user";
-    public final static String URL_LOGOUT = "/callback";
+    public final static String URL_LOGOUT = "/logout";
 
     @Override
     public Config build() {
@@ -37,7 +37,7 @@ public class SecurityConfig implements ConfigFactory {
 
         Config config = new Config(clients);
         //config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
-        config.setHttpActionAdapter(new SecurityHttpActionAdapter());
+        config.setHttpActionAdapter(new HttpActionAdapter());
 
         return config;
     }
@@ -45,7 +45,7 @@ public class SecurityConfig implements ConfigFactory {
     private MongoAuthenticator getMongoAuthenticator() {
 
         MongoClient mongoClient = getMongoClient();
-        MongoAuthenticator auth = new MongoAuthenticator(mongoClient);
+        MongoAuthenticator auth = new MongoAuthenticator(mongoClient, "", new PasswordValidator());
 
         auth.setUsersDatabase(MONGO_DATABASE);
         auth.setUsersCollection(C_USER);

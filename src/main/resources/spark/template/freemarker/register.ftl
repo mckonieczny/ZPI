@@ -1,16 +1,20 @@
 <html>
 <head>
     <meta charset="utf-8"/>
-    <title>Login</title>
+    <title>Register</title>
 </head>
 <body>
-    Login: pwd, Password: pwd
+    Register
     <form method="post">
         <input type="text" name="username" value="" />
         <p />
         <input type="password" name="password" value="" />
         <p />
-        <input type="submit" name="submit" value="Submit" />
+        <input type="submit" value="Submit" />
     </form>
+
+    <#if msg??>
+        ${msg}
+    </#if>
 </body>
 </html>

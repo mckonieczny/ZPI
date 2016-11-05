@@ -13,7 +13,7 @@ import static spark.Spark.halt;
 /**
  * Created by DjKonik on 2016-11-01.
  */
-public class SecurityHttpActionAdapter extends DefaultHttpActionAdapter {
+public class HttpActionAdapter extends DefaultHttpActionAdapter {
 
     @Override
     public Object adapt(int code, SparkWebContext context) {
