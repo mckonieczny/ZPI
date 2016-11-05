@@ -2,7 +2,7 @@ var path = require('path');
 var webpack = require('webpack')
 
 var ROOT = path.resolve(__dirname, 'client');
-var SRC = path.resolve(ROOT, 'js');
+var SRC = path.resolve(ROOT, 'src');
 var DEST = path.resolve(__dirname, 'build/resources/main/public/webapp');
 
 module.exports = {
@@ -12,9 +12,8 @@ module.exports = {
   },
   resolve: {
     root: [
-      path.resolve(ROOT, 'js'),
-      path.resolve(ROOT, 'css'),
-      path.resolve(ROOT, 'img')
+      path.resolve(ROOT, 'public'),
+      path.resolve(ROOT, 'src')
     ],
     extensions: ['', '.js', '.jsx']
   },
@@ -25,16 +24,17 @@ module.exports = {
   module: {
     loaders: [
       {
-        test: /\.js?$/,
-        loaders: ['babel-loader?presets[]=es2015&presets[]=react'],
-        include: SRC
+        test: /\.js[x]?$/,
+        loader: 'babel-loader',
+        include: SRC,
+        query:
+          {
+            presets:['react', 'es2015', 'stage-0']
+          }
       },
       {test: /\.css$/, loader: 'style-loader!css-loader'},
       {test: /\.less$/, loader: 'style!css!less'},
-      {test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/font-woff'},
-      {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=application/octet-stream'},
-      {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file'},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url?limit=10000&mimetype=image/svg+xml'}
+      {test: /\.(jpg|png|gif|svg|ico)$/i, loader: "file-loader?name=/images/[name].[ext]"},
     ]
   }
 };

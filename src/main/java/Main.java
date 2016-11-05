@@ -30,7 +30,7 @@ public class Main {
 
 
         //przykład strony html
-        get("/", (req, res) -> renderContent("/html/index.html"));
+        get("/panel", (req, res) -> renderContent("/html/index.html"));
 
         //przykład FreeMarkera
         get("/template", (req, res) -> {
@@ -39,7 +39,7 @@ public class Main {
             return new ModelAndView(model, "template.ftl");
         }, templateEngine());
 
-        get("/react", (req, res) -> {
+        get("/", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "index.ftl");
         }, templateEngine());
