@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static security.SecurityConfig.*;
 import static server.SparkUtils.templateEngine;
-import static spark.Redirect.Status.FOUND;
+import static spark.Redirect.Status.TEMPORARY_REDIRECT;
 import static spark.Spark.*;
 
 /**
@@ -59,10 +59,10 @@ public class LoginHandler {
     public void setLoginRestApi() {
 
         get(URL_LOGIN_REST_API, (req, res) -> "{auth:403}");
-        redirect.post(URL_LOGIN_REST_API, callbackUrl(), FOUND);
+        redirect.post(URL_LOGIN_REST_API, callbackUrl(), TEMPORARY_REDIRECT);
 
         get("/api/login2", (req, res) -> loginRestApiView(), templateEngine()); //TODO wyczyscic
-        redirect.post("/api/login2", callbackUrl(), FOUND);
+        redirect.post("/api/login2", callbackUrl(), TEMPORARY_REDIRECT);
 
         before(URL_LOGGED_USER_REST_API, new SecurityFilter(config, FORM_CLIENT));
         get(URL_LOGGED_USER_REST_API, (req, res) -> "{auth:200, user:{username:'user name', userId:'1'}}"); //TODO prawdziwe dane
