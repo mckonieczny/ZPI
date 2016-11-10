@@ -8,7 +8,10 @@ import org.pac4j.sparkjava.ApplicationLogoutRoute;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
-import spark.*;
+import spark.ModelAndView;
+import spark.Request;
+import spark.Response;
+import spark.Route;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,11 +58,14 @@ public class LoginHandler {
 */
     public void setLoginRestApi() {
 
-        get(URL_LOGIN_REST_API, (req, res) -> loginRestApiView(), templateEngine());
+        get(URL_LOGIN_REST_API, (req, res) -> "{auth:403}");
         redirect.post(URL_LOGIN_REST_API, callbackUrl(), TEMPORARY_REDIRECT);
 
+        get("/api/login2", (req, res) -> loginRestApiView(), templateEngine()); //TODO wyczyscic
+        redirect.post("/api/login2", callbackUrl(), TEMPORARY_REDIRECT);
+
         before(URL_LOGGED_USER_REST_API, new SecurityFilter(config, FORM_CLIENT));
-        get(URL_LOGGED_USER_REST_API, (req, res) -> loggedUserView(req, res), templateEngine());
+        get(URL_LOGGED_USER_REST_API, (req, res) -> "{auth:200, user:{username:'user name', userId:'1'}}"); //TODO prawdziwe dane
     }
 /*
     private ModelAndView loginFormView() {
