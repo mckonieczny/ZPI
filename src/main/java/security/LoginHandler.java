@@ -38,7 +38,7 @@ public class LoginHandler {
     public LoginHandler() {
 
         config =  new SecurityConfig().build();
-        callback = new CallbackRoute(config);
+        callback = new CallbackRoute(config, URL_LOGGED_USER_REST_API);
 
         get(URL_CALLBACK, callback);
         post(URL_CALLBACK, callback);
