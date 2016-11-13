@@ -1,33 +1,31 @@
 import React from 'react';
-import {Paper, TextField, RaisedButton, SelectField,
-  MenuItem, GridList, GridTile, Subheader, IconButton, Divider} from 'material-ui';
-import StarBorder from 'material-ui/svg-icons/toggle/star-border';
-import DeckCard from './DeckCard';
+import {TextField, Divider} from 'material-ui';
 import {Row,Col} from 'react-bootstrap';
 import {indigo500} from 'material-ui/styles/colors';
 import {browserHistory} from 'react-router';
 import _ from 'lodash';
 import {connect} from 'react-redux';
+import DeckCard from './DeckCard';
 
 class Decks extends React.Component {
 
-  constructor() {
-    super();
-    this.renderMyDecks = this.renderMyDecks.bind(this);
-    this.buttonClicked = this.buttonClicked.bind(this);
-  }
+    constructor () {
+        super();
+        this.renderMyDecks = this.renderMyDecks.bind(this);
+        this.buttonClicked = this.buttonClicked.bind(this);
+    }
 
-  buttonClicked(deckId) {
-    browserHistory.push(`/deck/${deckId}`);
-  }
+    buttonClicked (deckId) {
+        browserHistory.push(`/deck/${deckId}`);
+    }
 
-   renderMyDecks() {
-     return this.props.myDecks.map((deck) => (
-       <Col key={deck._id} md={4}>
-         <DeckCard key={deck._id} name={deck.name} creatorName={'Not Logged'} actionLabel={'Edit'}
-           description={deck.description} onAction={_.partial(this.buttonClicked, deck._id)} />
-       </Col>
-     ));
+   renderMyDecks () {
+      return this.props.myDecks.map((deck) => (
+          <Col key={deck._id} md={4}>
+              <DeckCard key={deck._id} name={deck.name} creatorName={'Not Logged'} actionLabel={'Edit'}
+                description={deck.description} onAction={_.partial(this.buttonClicked, deck._id)} />
+          </Col>
+      ));
    }
 
    renderOtherDecks() {
@@ -70,7 +68,7 @@ class Decks extends React.Component {
             </h1>
           </Col>
 
-          <Col md={3}>
+          <Col md={5}>
             <TextField
               hintText="Search"
             />

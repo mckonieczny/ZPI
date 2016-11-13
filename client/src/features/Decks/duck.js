@@ -1,22 +1,5 @@
-import {getUserId} from '../../api/user';
-
-export const CREATE_DECK = 'CREATE_DECK';
-export const DELETE_DECK = 'DELETE_DECK';
-
-export const createDeck = ({name, description}) => {
-    const ownerId = getUserId();
-    return {
-        type: CREATE_DECK,
-        data: {
-            _id: Date.now(),
-            name,
-            description,
-            ownerId,
-        }
-    };
-};
-
-export const deleteDeck = (deckId) => ({type: DELETE_DECK, deckId});
+import {CREATE_DECK, DELETE_DECK, LOADED_DECKS} from './actions';
+import _ from 'lodash';
 
 const initialState = [];
 
@@ -29,7 +12,9 @@ export const decksReducer = (state = initialState, action) => {
         case DELETE_DECK: {
             return state.filter(deck => deck._id != action.deckId);
         }
-
+        case LOADED_DECKS: {
+            return _.union(state, action.decks);
+        }
         default:
             return state;
     }

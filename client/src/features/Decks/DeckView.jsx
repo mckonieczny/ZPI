@@ -51,6 +51,7 @@ export default class DeckView extends React.Component {
                     primary={true}
                     style={buttonStyle}
                     icon={<Synchro />}
+                    onClick={this.props.onSynchronize}
                     />
                 {this.props.isOwner?
                     <FlatButton

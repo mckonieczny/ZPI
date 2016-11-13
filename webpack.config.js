@@ -7,9 +7,7 @@ var DEST = path.resolve(__dirname, 'build/resources/main/public/webapp');
 
 module.exports = {
   devtool: 'source-map',
-  entry: {
-    app: SRC + '/index.js',
-  },
+  entry: ['babel-polyfill', SRC + '/index.js'],
   resolve: {
     root: [
       path.resolve(ROOT, 'public'),

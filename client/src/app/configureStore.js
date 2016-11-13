@@ -1,37 +1,16 @@
-import {createStore} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import mainReducer from './mainReducer';
-
-const initialState = {
-    decks: [
-        {
-            _id: 1,
-            name: 'francuski podstawa',
-            description: 'podstawowe zwroty po francusku',
-            ownerId: 1
-        },
-        {
-            _id: 2,
-            name: 'niemiecki podstawa',
-            description: 'podstawowe zwroty po niemiecku',
-            ownerId: 2
-        },
-    ],
-    cards: [
-        {
-            _id: 1,
-            word: 'dom',
-            translation: 'haus',
-            deckId: 2,
-        }
-    ],
-};
+import createSagaMiddleware from 'redux-saga';
+import rootSaga from './rootSaga';
 
 const configureStore = () => {
+    const sagaMiddleware = createSagaMiddleware();
     const store = createStore(
         mainReducer,
-        initialState,
-        window.devToolsExtension ? window.devToolsExtension() : undefined
+        window.devToolsExtension ? window.devToolsExtension() : undefined,
+        applyMiddleware(sagaMiddleware)
     );
+    sagaMiddleware.run(rootSaga);
     return store;
 };
 

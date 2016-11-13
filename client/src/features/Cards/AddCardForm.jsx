@@ -35,7 +35,7 @@ export default class AddCardForm extends React.Component {
       return;
     }
     const newCard = {...this.state, deckId: this.props.deckId};
-    this.props.onSubmit(newCard);
+    this.props.addCard(newCard);
     this.setState({
       word: '',
       translation: ''

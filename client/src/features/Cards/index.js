@@ -1,4 +1,8 @@
+// components
 import AddCard from './AddCard';
 import CardsTable from './CardsTable';
 
-export {AddCard, CardsTable};
+// sagas
+import cardSagas from './sagas';
+
+export {AddCard, CardsTable, cardSagas};
