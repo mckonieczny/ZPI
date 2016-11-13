@@ -1,5 +1,5 @@
+import controllers.DeckController;
 import security.LoginHandler;
-
 import static server.SparkUtils.getHerokuAssignedPort;
 import static spark.Spark.port;
 import static spark.Spark.staticFileLocation;
@@ -17,6 +17,9 @@ public class Main {
         LoginHandler loginHandler = new LoginHandler();
         loginHandler.setLoginRestApi();
         loginHandler.setRegisterRestApi();
+
+        DeckController deckController = new DeckController();
+        deckController.setRestApi();
 
         Samples.create(loginHandler);
     }

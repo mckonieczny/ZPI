@@ -3,7 +3,7 @@ package database.repository;
 import database.document.DeckDocument;
 import database.mongo.MongoRepository;
 import org.bson.Document;
-
+import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +59,11 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
                 .into(decks);
 
         return decks;
+    }
+    
+    public Object delete(String id){
+        Object deleted = getCollection().findOneAndDelete(eq(DeckDocument.M_ID, new ObjectId(id)));
+        return deleted;
     }
 
 }
