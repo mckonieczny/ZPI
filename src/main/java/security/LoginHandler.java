@@ -1,5 +1,7 @@
 package security;
 
+import database.document.UserDocument;
+import database.repository.UserRepository;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
@@ -8,17 +10,14 @@ import org.pac4j.sparkjava.ApplicationLogoutRoute;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.SecurityFilter;
 import org.pac4j.sparkjava.SparkWebContext;
-import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
 import spark.Route;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import static security.SecurityConfig.*;
-import static server.SparkUtils.templateEngine;
+import static server.SparkUtils.notEmpty;
 import static spark.Redirect.Status.TEMPORARY_REDIRECT;
 import static spark.Spark.*;
 
@@ -27,11 +26,16 @@ import static spark.Spark.*;
  */
 public class LoginHandler {
 
-    private static final String LOGIN_VIEW = "login/login.ftl";
-    private static final String LOGGED_USER_VIEW = "login/user.ftl";
+    private static final int CODE_SUCCESS = 200;
+    private static final int CODE_ERROR = 403;
 
-    private static final String M_PROFILES = "profiles";
+    private static final String M_AUTH = "\"auth\"";
+    private static final String M_PROFILE = "\"user\"";
+    private static final String M_PROFILE_USERNAME = "\"username\"";
+    private static final String M_PROFILE_ID = "\"userId\"";
 
+
+    private UserRepository userRepository = new UserRepository();
     private Config config;
     private Route callback;
 
@@ -50,50 +54,80 @@ public class LoginHandler {
 
         return config;
     }
-/*
-    public void setLoginForm() {
 
-        get(URL_LOGIN_FORM, (req, res) -> loginFormView(), templateEngine());
-    }
-*/
     public void setLoginRestApi() {
 
-        get(URL_LOGIN_REST_API, (req, res) -> "{\"auth\":403}");
+        get(URL_LOGIN_REST_API, (req, res) -> responseError());
         redirect.post(URL_LOGIN_REST_API, callbackUrl(), TEMPORARY_REDIRECT);
 
-        get("/api/login2", (req, res) -> loginRestApiView(), templateEngine()); //TODO wyczyscic
-        redirect.post("/api/login2", callbackUrl(), TEMPORARY_REDIRECT);
-
         before(URL_LOGGED_USER_REST_API, new SecurityFilter(config, FORM_CLIENT));
-        get(URL_LOGGED_USER_REST_API, (req, res) -> "{\"auth\":200, \"user\":{\"username\":\"user name\", \"userId\":\"1\"}}"); //TODO prawdziwe dane
-    }
-/*
-    private ModelAndView loginFormView() {
-
-        Map<String, Object> model = new HashMap<>();
-        FormClient formClient = config.getClients().findClient(FormClient.class);
-
-        model.put("callbackUrl", formClient.getCallbackUrl());
-
-        return new ModelAndView(model, "logon/loginForm.ftl");
-    }
-*/
-    private ModelAndView loginRestApiView() {
-
-        Map<String, Object> model = new HashMap<>();
-
-        return new ModelAndView(model, LOGIN_VIEW);
+        get(URL_LOGGED_USER_REST_API, (req, res) -> {
+            return getProfile(req, res)
+                    .map(this::responseSuccess)
+                    .orElse(responseError());
+        });
     }
 
-    private ModelAndView loggedUserView(Request req, Response res) {
+    public void setRegisterRestApi() {
 
-        Map<String, Object> model = new HashMap<>();
+        // Rejestracja z logowaniem (logownie z parametrem action=register)
+        before(URL_CALLBACK, (req, res) -> {
 
-        model.put(M_PROFILES, getProfiles(req, res));
+            String action = req.queryParams("action");
+            if (notEmpty(action) && action.equals("register")) {
 
-        return new ModelAndView(model, LOGGED_USER_VIEW);
+                String username = req.queryParams("username");
+                String password = req.queryParams("password");
+
+                if (notEmpty(username) && notEmpty(username) && userRepository.findByName(username).isEmpty()) {
+
+                    userRepository.save(new UserDocument(username, PasswordHash.createHash(password)));
+                }
+            }
+        });
+
+        // Rejestracja bez logowania TODO możliwe że do wywalenia
+        post("/api/register", (req, res) -> {
+
+            String username = req.queryParams("username");
+            String password = req.queryParams("password");
+
+            if(notEmpty(username) && notEmpty(username)  && userRepository.findByName(username).isEmpty()) {
+
+                UserDocument user = new UserDocument(username, PasswordHash.createHash(password));
+                userRepository.save(user);
+
+                return responseSuccess(user);
+            } else {
+                return responseError();
+            }
+
+        });
     }
 
+    private String responseSuccess(CommonProfile profile) {
+
+        UserDocument user = userRepository.findByName(profile.getId()); // TODO wsyzstkie dane dostepne z poziomu CommonProfile
+
+        return responseSuccess(user);
+    };
+
+    private String responseSuccess(UserDocument user) {
+
+        return "{" +
+            M_AUTH + ":" + CODE_SUCCESS + "," +
+            M_PROFILE + ":" + "{" +
+                M_PROFILE_USERNAME + ":\"" + user.getUsername() + "\"," +
+                M_PROFILE_ID + ":\"" + user.getId() +  "\"" +
+            "}" +
+        "}";
+    }
+
+    private String responseError() {
+        return "{" +
+            M_AUTH + ":" + CODE_ERROR +
+        "}";
+    }
 
     private String callbackUrl() {
 
@@ -102,11 +136,11 @@ public class LoginHandler {
         return formClient.getCallbackUrl();
     }
 
-    private List<CommonProfile> getProfiles(Request request, Response response) {
+    private Optional<CommonProfile> getProfile(Request request, Response response) {
 
         SparkWebContext context = new SparkWebContext(request, response);
         ProfileManager manager = new ProfileManager(context);
 
-        return manager.getAll(true);
+        return manager.get(true);
     }
 }

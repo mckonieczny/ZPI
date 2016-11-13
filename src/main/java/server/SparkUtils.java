@@ -35,6 +35,11 @@ public class SparkUtils {
         return templateEngine;
     }
 
+    public static boolean notEmpty(String str) {
+
+        return str != null && !str.equals("");
+    }
+
     private static String renderDeployedContent(String htmlFile) {
         try {
             File file = new File(DEPLOYED_RESOURCES_PATH + htmlFile);
