@@ -136,11 +136,22 @@ public class LoginHandler {
         return formClient.getCallbackUrl();
     }
 
-    private Optional<CommonProfile> getProfile(Request request, Response response) {
+    public static Optional<CommonProfile> getProfile(Request request, Response response) {
 
         SparkWebContext context = new SparkWebContext(request, response);
         ProfileManager manager = new ProfileManager(context);
 
         return manager.get(true);
+    }
+
+    public static String loggedUserId(Request req, Response res) {
+
+        UserRepository userRepository = new UserRepository(); // TODO repository jako singleton
+
+        return getProfile(req, res)
+                .map(CommonProfile::getId)
+                .map(userRepository::findByName)
+                .map(UserDocument::getId)// TODO wsyzstkie dane dostepne z poziomu CommonProfile
+                .orElse("");
     }
 }

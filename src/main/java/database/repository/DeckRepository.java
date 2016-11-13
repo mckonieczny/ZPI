@@ -6,6 +6,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -19,6 +20,23 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
 
     public DeckRepository() {
         super(C_DECKS);
+    }
+
+
+    public Optional<DeckDocument> findById(String deckId) {
+
+        List<DeckDocument> decks = new ArrayList<>();
+
+        getCollection()
+                .find(eqId(deckId))
+                .map(deck -> new DeckDocument((Document) deck))
+                .into(decks);
+
+        if (decks.isEmpty()) {
+            return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(decks.get(0));
     }
 
     public List<DeckDocument> findAll() {

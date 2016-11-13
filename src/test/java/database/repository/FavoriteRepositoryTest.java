@@ -4,6 +4,8 @@ import database.document.FavoriteDocument;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static java.util.UUID.randomUUID;
 import static org.junit.Assert.*;
 
@@ -74,6 +76,41 @@ public class FavoriteRepositoryTest {
 
         //when
         favoriteRepository.delete(userId, deckId);
+
+        //then
+        boolean isFavorite = favoriteRepository.isFavorite(userId, deckId);
+        assertFalse(isFavorite);
+    }
+
+    @Test
+    public void shouldFindFavoriteById() {
+        //given
+        String userId = randomUUID().toString();
+        String deckId = randomUUID().toString();
+
+        FavoriteDocument favorite = new FavoriteDocument(userId, deckId);
+        favoriteRepository.save(favorite);
+
+        //when
+        Optional<FavoriteDocument> result = favoriteRepository.findById(favorite.getId());
+
+        //then
+        assertNotNull(result);
+        assertTrue(result.isPresent());
+        assertFalse(result.get().isEmpty());
+    }
+
+    @Test
+    public void shouldDeleteFavoriteById() {
+        //given
+        String userId = randomUUID().toString();
+        String deckId = randomUUID().toString();
+
+        FavoriteDocument favorite = new FavoriteDocument(userId, deckId);
+        favoriteRepository.save(favorite);
+
+        //when
+        favoriteRepository.deleteById(favorite.getId());
 
         //then
         boolean isFavorite = favoriteRepository.isFavorite(userId, deckId);

@@ -25,24 +25,29 @@ public class FavoriteRepository extends MongoRepository<FavoriteDocument> {
         super(C_DECKS);
     }
 
+    
     public boolean isFavorite(String userId, String deckId) {
 
-        Optional<FavoriteDocument> favorite = findFavorite(userId, deckId);
+        Optional<FavoriteDocument> favorite = find(userId, deckId);
 
         return !favorite.map(FavoriteDocument::isEmpty).orElse(true);
     }
 
     public FavoriteDocument save(String userId, String deckId) {
 
-        FavoriteDocument favorite = new FavoriteDocument(userId, deckId);
-        save(favorite);
+        return find(userId, deckId)
+            .orElseGet(() -> {
 
-        return favorite;
+                FavoriteDocument favorite = new FavoriteDocument(userId, deckId);
+                save(favorite);
+
+                return favorite;
+            });
     }
 
     public void delete(String userId, String deckId) {
 
-        Optional<FavoriteDocument> favorite = findFavorite(userId, deckId);
+        Optional<FavoriteDocument> favorite = find(userId, deckId);
 
         favorite.ifPresent(fav -> delete(fav));
 
@@ -59,13 +64,29 @@ public class FavoriteRepository extends MongoRepository<FavoriteDocument> {
         return favorites;
     }
 
-    private Optional<FavoriteDocument> findFavorite(String userId, String deckId) {
+    private Optional<FavoriteDocument> find(String userId, String deckId) {
 
         List<FavoriteDocument> favorites = new ArrayList<>();
 
         getCollection()
                 .find(and(eq(M_USER_ID, userId), eq(M_DECK_ID, deckId)))
                 .map(card -> new FavoriteDocument((Document) card))
+                .into(favorites);
+
+        if (favorites.isEmpty()) {
+            return Optional.ofNullable(null);
+        }
+
+        return Optional.ofNullable(favorites.get(0));
+    }
+
+    public Optional<FavoriteDocument> findById(String favoriteId) {
+
+        List<FavoriteDocument> favorites = new ArrayList<>();
+
+        getCollection()
+                .find(eqId(favoriteId))
+                .map(favorite -> new FavoriteDocument((Document) favorite))
                 .into(favorites);
 
         if (favorites.isEmpty()) {
