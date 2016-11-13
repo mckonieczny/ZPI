@@ -28,8 +28,8 @@ public class DeckController extends AbstractController {
 
                 if(owner != null && name != null) {
                     DeckDocument deck = new DeckDocument(owner, name, description, difficulty);
-                    response = deck.toJson();
                     repository.save(deck);
+                    response = deck.getId();
                 }
             } catch (NumberFormatException exception){
                 resp.status(HTTP_BAD_REQUEST);
