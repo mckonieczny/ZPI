@@ -77,6 +77,22 @@ public class Main {
 
             return new ModelAndView(model, "register.ftl");
         }, templateEngine());
+
+        post("/api/register", (req, res) -> {
+
+            UserRepository userRepository = new UserRepository();
+
+            String username = req.queryParams("username");
+            String password = req.queryParams("password");
+
+            if(userRepository.findByName(username).isEmpty()) {
+                userRepository.save(new UserDocument(username, PasswordHash.createHash(password)));
+                return "{\"auth\":200, \"user\":{\"username\":\"user name\", \"userId\":\"1\"}}"; //TODO prawdziwe dane
+            } else {
+                return "{\"auth\":403}";
+            }
+
+        });
     }
 
     private static ModelAndView getReactPage() {

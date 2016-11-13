@@ -65,7 +65,7 @@ public class LoginHandler {
         redirect.post("/api/login2", callbackUrl(), TEMPORARY_REDIRECT);
 
         before(URL_LOGGED_USER_REST_API, new SecurityFilter(config, FORM_CLIENT));
-        get(URL_LOGGED_USER_REST_API, (req, res) -> "{\"auth\":200, \"user\":{\"username\":\"user name\", \"userId\":\"1\", \"sessionId\":\""+req.cookie("JSESSIONID")+"\"}}"); //TODO prawdziwe dane
+        get(URL_LOGGED_USER_REST_API, (req, res) -> "{\"auth\":200, \"user\":{\"username\":\"user name\", \"userId\":\"1\"}}"); //TODO prawdziwe dane
     }
 /*
     private ModelAndView loginFormView() {
