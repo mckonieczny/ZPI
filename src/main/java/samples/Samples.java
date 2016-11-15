@@ -9,13 +9,13 @@ import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
 import database.repository.UserRepository;
 import security.LoginHandler;
-import security.PasswordHash;
 import spark.ModelAndView;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
+import static security.PasswordHash.createHash;
 import static server.SparkUtils.renderContent;
 import static server.SparkUtils.templateEngine;
 import static spark.Redirect.Status.TEMPORARY_REDIRECT;
@@ -46,7 +46,7 @@ public class Samples {
             String password = req.queryParams("password");
 
             if(userRepository.findByName(username).isEmpty()) {
-                userRepository.save(new UserDocument(username, PasswordHash.createHash(password)));
+                userRepository.save(new UserDocument(username, createHash(password)));
                 model.put("msg", "Dodano użytkownika " + username);
             } else {
                 model.put("msg", "Użytkownik " + username + " już istnieje");
@@ -100,15 +100,15 @@ public class Samples {
         return new ModelAndView(model, "index.ftl");
     }
 
-    private static void initDB() {
+    private static void initDB() throws Exception {
 
         UserRepository userDB = new UserRepository();
         DeckRepository deckDB = new DeckRepository();
         CardRepository cardDB = new CardRepository();
         FavoriteRepository favDB = new FavoriteRepository();
 
-        UserDocument user1 = new UserDocument("admin", "admin");
-        UserDocument user2 = new UserDocument("pwd", "pwd");
+        UserDocument user1 = new UserDocument("admin", createHash("admin"));
+        UserDocument user2 = new UserDocument("pwd", createHash("pwd"));
 
         userDB.save(user1);
         userDB.save(user2);
