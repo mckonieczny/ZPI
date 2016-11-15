@@ -1,4 +1,5 @@
 import controllers.DeckController;
+import controllers.FavoriteController;
 import samples.Samples;
 import security.LoginHandler;
 import static server.SparkUtils.getHerokuAssignedPort;
@@ -21,6 +22,8 @@ public class Main {
 
         DeckController deckController = new DeckController();
         deckController.setRestApi();
+
+        new FavoriteController().setRestApi();
 
         Samples.create(loginHandler);
     }

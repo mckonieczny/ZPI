@@ -62,6 +62,8 @@ public class LoginHandler {
 
         before(URL_LOGGED_USER_REST_API, new SecurityFilter(config, FORM_CLIENT));
         get(URL_LOGGED_USER_REST_API, (req, res) -> {
+            //TODO ciasteczko zalogowanej sesji ustawiane na godzinę
+            res.cookie("/", "JSESSIONID", req.cookie("JSESSIONID"), 60*60, false);
             return getProfile(req, res)
                     .map(this::responseSuccess)
                     .orElse(responseError());

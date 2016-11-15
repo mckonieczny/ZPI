@@ -77,7 +77,6 @@ public class Samples {
             return new ModelAndView(model, "private.ftl");
         }, templateEngine());
 
-        get("/api/decks", (req, res) -> toJson(new DeckRepository().findAll()));
         get("/api/decks/:id", (req, res) -> toJson(new CardRepository().findByDeckId(req.params(":id"))));
 
         get("/register", (req, res) -> {
