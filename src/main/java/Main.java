@@ -1,6 +1,8 @@
 import controllers.AbstractController;
 import controllers.CardController;
 import controllers.DeckController;
+import controllers.FavoriteController;
+import samples.Samples;
 import security.LoginHandler;
 import static server.SparkUtils.getHerokuAssignedPort;
 import static spark.Spark.port;
@@ -25,6 +27,8 @@ public class Main {
 
         controller = new CardController();
         controller.registerRestApi();
+
+        new FavoriteController().setRestApi();
 
         Samples.create(loginHandler);
     }

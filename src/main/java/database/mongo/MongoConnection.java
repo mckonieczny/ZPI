@@ -42,4 +42,5 @@ public class MongoConnection {
     public MongoCollection<Document> getCollection(String collectionName) {
         return db.getCollection(collectionName);
     }
+    public MongoDatabase getDatabase() {return db;}
 }

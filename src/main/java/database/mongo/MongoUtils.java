@@ -18,4 +18,10 @@ public class MongoUtils {
 
         return "[" + join(",", jsonList) + "]";
     }
+
+    public static void dropDatabase() {
+        MongoConnection.open()
+                .getDatabase()
+                .drop();
+    }
 }

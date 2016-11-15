@@ -14,6 +14,7 @@ public class DeckDocument extends MongoDocument {
     public final static String M_DESCRIPTION = "description";
     public final static String M_DIFFICULTY = "difficulty";
     public final static String M_SIZE = "size";
+    public final static String M_FAVORITE = "favorite";
 
 
     public DeckDocument(Document document) {
@@ -29,7 +30,6 @@ public class DeckDocument extends MongoDocument {
         setName(name);
         setDescription(description);
         setDifficulty(difficulty);
-        setSize(0);
     }
 
     public String getOwnerId() {
@@ -57,7 +57,7 @@ public class DeckDocument extends MongoDocument {
     }
 
     public int getDifficulty() {
-        return getDocument().getInteger(M_DIFFICULTY);
+        return getDocument().getInteger(M_DIFFICULTY, 0);
     }
 
     public void setDifficulty(int difficulty) {
@@ -65,10 +65,18 @@ public class DeckDocument extends MongoDocument {
     }
 
     public int getSize() {
-        return getDocument().getInteger(M_SIZE);
+        return getDocument().getInteger(M_SIZE, 0);
     }
 
     public void setSize(int size) {
         getDocument().put(M_SIZE, size);
+    }
+
+    public boolean isFavorite() {
+        return getDocument().getBoolean(M_FAVORITE, false);
+    }
+
+    public void setFavorite(boolean favorite) {
+        getDocument().put(M_FAVORITE, favorite);
     }
 }
