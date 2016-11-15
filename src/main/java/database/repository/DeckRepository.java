@@ -6,7 +6,6 @@ import org.bson.Document;
 import org.bson.types.ObjectId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -20,23 +19,6 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
 
     public DeckRepository() {
         super(C_DECKS);
-    }
-
-
-    public Optional<DeckDocument> findById(String deckId) {
-
-        List<DeckDocument> decks = new ArrayList<>();
-
-        getCollection()
-                .find(eqId(deckId))
-                .map(deck -> new DeckDocument((Document) deck))
-                .into(decks);
-
-        if (decks.isEmpty()) {
-            return Optional.ofNullable(null);
-        }
-
-        return Optional.ofNullable(decks.get(0));
     }
 
     public List<DeckDocument> findAll() {
@@ -60,10 +42,22 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
 
         return decks;
     }
+
+    public DeckDocument findByDeckId(String id){
+        List<DeckDocument> decks = new ArrayList<>();
+        getCollection()
+                .find(eqId(id))
+                .map(deck -> new DeckDocument((Document)deck))
+                .into(decks);
+        return decks.size() > 0 ? decks.get(0) : null;
+    }
     
     public Object delete(String id){
         Object deleted = getCollection().findOneAndDelete(eq(DeckDocument.M_ID, new ObjectId(id)));
         return deleted;
     }
 
+    public void update(String whereField, String whereValue, String updateField, String updateValue){
+        getCollection().updateOne(new Document(whereField, whereValue), new Document(updateField, updateValue) );
+    }
 }

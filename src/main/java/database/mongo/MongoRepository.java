@@ -28,7 +28,7 @@ public abstract class MongoRepository<E extends MongoDocument> {
         collection.deleteOne(document.getDocument());
     }
 
-    protected static BasicDBObject eqId(String id) {
+    public static BasicDBObject eqId(String id) {
 
         BasicDBObject query = new BasicDBObject("_id", new ObjectId(id));
 

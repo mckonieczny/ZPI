@@ -39,3 +39,4 @@ public abstract class MongoDocument {
 
     public String toJson() {return document.toJson();}
 }
+

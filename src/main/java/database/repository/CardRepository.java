@@ -6,6 +6,7 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.mongodb.client.model.Filters.eq;
 import static database.document.CardDocument.M_DECK_ID;
@@ -32,4 +33,19 @@ public class CardRepository extends MongoRepository<CardDocument> {
         return cards;
     }
 
+    public Map<String, String> findById(String cardId) {
+        Map<String, String> map = (Map<String, String>) getCollection().find(this.eqId(cardId)).first();
+        return map;
+    }
+
+    public List<CardDocument> findAll() {
+
+        List<CardDocument> cards = new ArrayList<>();
+        getCollection()
+                .find()
+                .map(card -> new CardDocument((Document) card))
+                .into(cards);
+
+        return cards;
+    }
 }
