@@ -105,6 +105,10 @@ public class LoginHandler {
         });
     }
 
+    public void secureUrl(String url) {
+        before(url, new SecurityFilter(config, FORM_CLIENT));
+    }
+
     private String responseSuccess(CommonProfile profile) {
 
         UserDocument user = userRepository.findByName(profile.getId()); // TODO wsyzstkie dane dostepne z poziomu CommonProfile
