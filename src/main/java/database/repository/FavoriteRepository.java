@@ -18,14 +18,14 @@ import static database.document.FavoriteDocument.M_USER_ID;
  */
 public class FavoriteRepository extends MongoRepository<FavoriteDocument> {
 
-    public final static String C_DECKS = "decks";
+    public final static String C_FAVORITES = "favorites";
 
 
     public FavoriteRepository() {
-        super(C_DECKS);
+        super(C_FAVORITES);
     }
 
-    
+
     public boolean isFavorite(String userId, String deckId) {
 
         Optional<FavoriteDocument> favorite = find(userId, deckId);

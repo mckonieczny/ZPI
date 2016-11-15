@@ -6,19 +6,30 @@
 <p>
     <a href="/panel/decks">Powrót</a>
 <p/>
+<table>
+    <tr>
+        <td>Słówko</td>
+        <td>Tłumaczenie</td>
+        <td></td>
+    </tr>
 <#list cards as card>
-    <div>
-        ${card.id} |
+    <tr>
+        <td>
         <#if card.word??>
-            ${card.word} |
+            ${card.word}
         </#if>
+        </td>
+        <td>
         <#if card.translation??>
-            ${card.translation} |
+            ${card.translation}
         </#if>
-        <a href="/panel/decks/${deckId}/cards/delete/${card.id}">Usuń</a>
-    </div>
+        </td>
+        <td>
+            <a href="/panel/decks/${deckId}/cards/delete/${card.id}">Usuń</a>
+        </td>
+    </tr>
 </#list>
-
+</table>
 <p />
 
 <div>

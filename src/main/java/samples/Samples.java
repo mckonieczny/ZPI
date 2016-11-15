@@ -1,3 +1,5 @@
+package samples;
+
 import database.document.CardDocument;
 import database.document.DeckDocument;
 import database.document.UserDocument;
@@ -6,7 +8,6 @@ import database.repository.CardRepository;
 import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
 import database.repository.UserRepository;
-import org.pac4j.sparkjava.SecurityFilter;
 import security.LoginHandler;
 import security.PasswordHash;
 import spark.ModelAndView;
