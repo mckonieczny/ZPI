@@ -27,6 +27,9 @@ public class Samples {
 
     public static void create(LoginHandler loginHandler) {
 
+        DeckSample.create(loginHandler);
+        CardSample.create(loginHandler);
+
         //formularz logowania
         get("/login", (req, res) -> new ModelAndView(new HashMap<>(), "login/login.ftl"), templateEngine());
         redirect.post("/login", "/callback?client_name=FormClient", TEMPORARY_REDIRECT);
@@ -67,7 +70,7 @@ public class Samples {
         get("/decks", (req, res) -> getReactPage(), templateEngine());
         get("/deck/:deckId", (req, res) -> getReactPage(), templateEngine());
 
-        before("/private", new SecurityFilter(loginHandler.getConfig(), "loginForm"));
+        loginHandler.secureUrl("/private");
         get("/private", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "private.ftl");

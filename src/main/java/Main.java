@@ -1,4 +1,5 @@
 import controllers.DeckController;
+import samples.Samples;
 import security.LoginHandler;
 import static server.SparkUtils.getHerokuAssignedPort;
 import static spark.Spark.port;
