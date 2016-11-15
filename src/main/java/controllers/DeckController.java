@@ -30,14 +30,17 @@ public class DeckController extends AbstractController {
             String owner = req.queryParams("ownerId");
             String name = req.queryParams("name");
             String description = req.queryParams("description");
-            String response = null;
+            String response = "";
             try{
                 int difficulty = Integer.parseInt(req.queryParams("difficulty"));
 
-                if(owner != null && name != null) {
+                if(owner != null && owner.isEmpty()
+                        && name != null && name.isEmpty()) {
                     DeckDocument deck = new DeckDocument(owner, name, description, difficulty);
                     repository.save(deck);
                     response = deck.getId();
+                }else {
+                    resp.status(HTTP_BAD_REQUEST);
                 }
             } catch (NumberFormatException exception){
                 resp.status(HTTP_BAD_REQUEST);

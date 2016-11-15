@@ -35,13 +35,18 @@ public class CardController extends AbstractController {
                     && translation != null && !translation.isEmpty()){
                 try{
                     CardDocument card = new CardDocument(deckId, word, translation);
-                    this.repository.save(card);
                     DeckRepository deckRepository = new DeckRepository();
                     DeckDocument deck = deckRepository.findByDeckId(deckId);
-                    deck.setSize(deck.getSize()+1);
-                    deckRepository.update(deck.M_ID, deck.getId(), deck.M_SIZE, ""+deck.getSize());
-                    result = card.getId();
-                    response.status(HTTP_OK);
+                    if(deck != null) {
+                        this.repository.save(card);
+                        deck.setSize(deck.getSize() + 1);
+                        deckRepository.updateSize(deck.getId(), deck.getSize());
+                        result = card.getId();
+                        response.status(HTTP_OK);
+                    }else {
+                        response.status(HTTP_NOT_FOUND);
+                        result = "Deck with gaven id does not exists";
+                    }
                 }catch (Exception e){
                     response.status(HTTP_INTERNAL_ERROR);
                     result = e.getMessage();
@@ -61,8 +66,8 @@ public class CardController extends AbstractController {
                     String deckId = card.get(CardDocument.M_DECK_ID);
                     DeckRepository deckRepository = new DeckRepository();
                     DeckDocument deck = deckRepository.findByDeckId(deckId);
-                    deck.setSize(deck.getSize() + 1);
-                    deckRepository.update(deck.M_ID, deck.getId(), deck.M_SIZE, "" + deck.getSize());
+                    deck.setSize(deck.getSize() - 1);
+                    deckRepository.updateSize(deck.getId(), deck.getSize());
                     repository.deleteById(cardId);
                     response.status(HTTP_OK);
                 }

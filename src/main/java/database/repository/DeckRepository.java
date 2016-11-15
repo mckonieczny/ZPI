@@ -1,5 +1,6 @@
 package database.repository;
 
+import com.mongodb.BasicDBObject;
 import database.document.DeckDocument;
 import database.mongo.MongoRepository;
 import org.bson.Document;
@@ -57,7 +58,7 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
         return deleted;
     }
 
-    public void update(String whereField, String whereValue, String updateField, String updateValue){
-        getCollection().updateOne(new Document(whereField, whereValue), new Document(updateField, updateValue) );
+    public void updateSize(String deckId, int newSize){
+        getCollection().updateOne(eqId(deckId), new BasicDBObject("$set", new Document(DeckDocument.M_SIZE, newSize)) );
     }
 }
