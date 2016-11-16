@@ -25,7 +25,7 @@ public class CardController extends AbstractController {
     @Override
     public void registerRestApi() {
 
-        post("/cards/create", (request, response) ->{
+        post("/api/cards/create", (request, response) ->{
             String deckId = request.queryParams("deckId");
             String word = request.queryParams("word");
             String translation = request.queryParams("translation");
@@ -57,7 +57,7 @@ public class CardController extends AbstractController {
             return result;
         });
 
-        delete("/cards/delete/:id", (request, response) -> {
+        delete("/api/cards/delete/:id", (request, response) -> {
             String cardId = request.params("id");
             String result = "";
             if(cardId != null && !cardId.isEmpty()) {
@@ -82,7 +82,6 @@ public class CardController extends AbstractController {
             return result;
         });
 
-        get("/cards", (request, response) -> toJson(repository.findAll()));
 
     }
 }

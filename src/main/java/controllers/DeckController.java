@@ -48,7 +48,7 @@ public class DeckController extends AbstractController {
             return toJson(decks);
         });
 
-        post("/decks/create", (req, resp)-> {
+        post("/api/decks/create", (req, resp)-> {
             String owner = req.queryParams("ownerId");
             String name = req.queryParams("name");
             String description = req.queryParams("description");
@@ -73,7 +73,7 @@ public class DeckController extends AbstractController {
             return response;
         });
 
-        delete("/decks/delete/:id", (req, resp) -> {
+        delete("/api/decks/delete/:id", (req, resp) -> {
             String result = "";
             String id = req.params("id");
             if(id!=null && !id.isEmpty()){
@@ -103,6 +103,5 @@ public class DeckController extends AbstractController {
             return result;
         });
 
-        get("/decks", (request, response) -> toJson(deckRepository.findAll()));
     }
 }
