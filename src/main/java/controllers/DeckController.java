@@ -60,6 +60,7 @@ public class DeckController extends AbstractController {
                         && name != null && !name.isEmpty()) {
                     DeckDocument deck = new DeckDocument(owner, name, description, difficulty);
                     deckRepository.save(deck);
+                    resp.status(HTTP_OK);
                     response = deck.getId();
                 }else {
                     resp.status(HTTP_BAD_REQUEST);
