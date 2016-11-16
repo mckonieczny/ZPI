@@ -63,11 +63,14 @@ public class DeckController extends AbstractController {
                     response = deck.getId();
                 }else {
                     resp.status(HTTP_BAD_REQUEST);
+                    response = "Owner or name is missing";
                 }
             } catch (NumberFormatException exception){
                 resp.status(HTTP_BAD_REQUEST);
+                response = "bad format of difficulty";
             }catch (Exception  e){
                 resp.status(HTTP_INTERNAL_ERROR);
+                response = e.getMessage();
             }
 
             return response;
