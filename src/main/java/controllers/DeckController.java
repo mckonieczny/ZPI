@@ -8,10 +8,10 @@ import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.net.HttpURLConnection.*;
+import static java.util.stream.Collectors.toList;
 import static security.LoginHandler.loggedUserId;
 import static spark.Spark.*;
 
@@ -32,15 +32,23 @@ public class DeckController extends AbstractController {
 
         get("/api/decks", (req, res) -> {
             List<DeckDocument> decks = deckRepository.findAll();
-            List<String> favorites = favoriteRepository.findByUserId(loggedUserId(req, res))
-                    .stream()
-                    .map(FavoriteDocument::getDeckId)
-                    .collect(Collectors.toList());
+            setFavorites(decks, loggedUserId(req, res));
+            return toJson(decks);
+        });
 
-            for(DeckDocument deck : decks) {
-                deck.setFavorite(favorites.contains(deck.getId()));
-            }
+        get("/api/favorite/decks", (req, res) -> {
+            List<DeckDocument> decks = deckRepository.findAll();
+            setFavorites(decks, loggedUserId(req, res));
+            decks = decks.stream()
+                    .filter(DeckDocument::isFavorite)
+                    .collect(toList());
 
+            return toJson(decks);
+        });
+
+        get("/api/user/decks", (req, res) -> {
+            List<DeckDocument> decks =  deckRepository.findByOwnerId(loggedUserId(req, res));
+            setFavorites(decks, loggedUserId(req, res));
             return toJson(decks);
         });
 
@@ -103,5 +111,17 @@ public class DeckController extends AbstractController {
             return result;
         });
 
+    }
+
+    private List<DeckDocument> setFavorites(List<DeckDocument> decks, String userId) {
+        List<String> favorites = favoriteRepository.findByUserId(userId)
+                .stream()
+                .map(FavoriteDocument::getDeckId)
+                .collect(toList());
+
+        for(DeckDocument deck : decks) {
+            deck.setFavorite(favorites.contains(deck.getId()));
+        }
+        return decks;
     }
 }
