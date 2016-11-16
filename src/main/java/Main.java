@@ -28,7 +28,7 @@ public class Main {
         controller = new CardController();
         controller.registerRestApi();
 
-        new FavoriteController().setRestApi();
+        new FavoriteController().registerRestApi();
 
         Samples.create(loginHandler);
     }

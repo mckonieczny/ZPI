@@ -10,7 +10,6 @@ import java.util.List;
 
 import database.repository.FavoriteRepository;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static database.mongo.MongoUtils.toJson;
@@ -19,7 +18,6 @@ import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static security.LoginHandler.loggedUserId;
 import static spark.Spark.*;
-import static database.mongo.MongoUtils.toJson;
 
 
 /**
@@ -58,8 +56,8 @@ public class DeckController extends AbstractController {
             try{
                 int difficulty = Integer.parseInt(req.queryParams("difficulty"));
 
-                if(owner != null && owner.isEmpty()
-                        && name != null && name.isEmpty()) {
+                if(owner != null && !owner.isEmpty()
+                        && name != null && !name.isEmpty()) {
                     DeckDocument deck = new DeckDocument(owner, name, description, difficulty);
                     deckRepository.save(deck);
                     response = deck.getId();
@@ -105,6 +103,6 @@ public class DeckController extends AbstractController {
             return result;
         });
 
-        get("/decks", (request, response) -> toJson(repository.findAll()));
+        get("/decks", (request, response) -> toJson(deckRepository.findAll()));
     }
 }

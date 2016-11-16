@@ -45,7 +45,7 @@ public class CardController extends AbstractController {
                         response.status(HTTP_OK);
                     }else {
                         response.status(HTTP_NOT_FOUND);
-                        result = "Deck with gaven id does not exists";
+                        result = "Deck with given id does not exists";
                     }
                 }catch (Exception e){
                     response.status(HTTP_INTERNAL_ERROR);
@@ -60,7 +60,7 @@ public class CardController extends AbstractController {
         delete("/cards/delete/:id", (request, response) -> {
             String cardId = request.params("id");
             String result = "";
-            if(cardId!=null && !cardId.isEmpty()) {
+            if(cardId != null && !cardId.isEmpty()) {
                 try{
                     Map<String, String> card = repository.findById(cardId);
                     String deckId = card.get(CardDocument.M_DECK_ID);

@@ -13,7 +13,7 @@ public class FavoriteController extends AbstractController {
 
     private FavoriteRepository favoriteRepository = new FavoriteRepository();
 
-    public void setRestApi(){
+    public void registerRestApi(){
 
         post("/api/favorite/add", (req, res) -> {
             String deckId = req.queryParams("deckId");
