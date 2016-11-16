@@ -15,7 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static org.bson.Document.parse;
+import static security.LoginHandler.loggedUserId;
 import static security.PasswordHash.createHash;
+import static server.SparkUtils.notEmpty;
 import static server.SparkUtils.renderContent;
 import static server.SparkUtils.templateEngine;
 import static spark.Redirect.Status.TEMPORARY_REDIRECT;
@@ -90,6 +95,22 @@ public class Samples {
             initDB();
 
             return renderContent("/html/index.html");
+        });
+
+        post("/api/decks/create2", (req, res)-> {
+
+            DeckDocument deck = new DeckDocument(parse(req.body()));
+            deck.setSize(0);
+            deck.setOwnerId(loggedUserId(req, res));
+
+            if (notEmpty(deck.getName()) && notEmpty(deck.getDescription())) {
+                new DeckRepository().save(deck);
+                res.status(HTTP_OK);
+                return deck.toJson();
+            } else {
+                res.status(HTTP_BAD_REQUEST);
+                return "";
+            }
         });
 
     }

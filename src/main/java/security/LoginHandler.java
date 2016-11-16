@@ -82,8 +82,9 @@ public class LoginHandler {
                 String password = req.queryParams("password");
 
                 if (notEmpty(username) && notEmpty(username) && userRepository.findByName(username).isEmpty()) {
-
                     userRepository.save(new UserDocument(username, PasswordHash.createHash(password)));
+                } else {
+                    halt(401, responseError());
                 }
             }
         });

@@ -2,20 +2,16 @@ package controllers;
 
 import database.document.CardDocument;
 import database.document.DeckDocument;
-import database.repository.CardRepository;
 import database.document.FavoriteDocument;
+import database.repository.CardRepository;
 import database.repository.DeckRepository;
-
-import java.util.List;
-
 import database.repository.FavoriteRepository;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static database.mongo.MongoUtils.toJson;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.*;
 import static security.LoginHandler.loggedUserId;
 import static spark.Spark.*;
 
