@@ -8,8 +8,8 @@ import database.repository.DeckRepository;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.*;
-import static spark.Spark.*;
-import static database.mongo.MongoUtils.toJson;
+import static spark.Spark.delete;
+import static spark.Spark.post;
 
 /**
  * Created by Andrzej on 2016-11-13.

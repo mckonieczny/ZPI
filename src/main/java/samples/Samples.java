@@ -15,8 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.HttpURLConnection.*;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
 import static security.PasswordHash.createHash;
@@ -107,6 +106,19 @@ public class Samples {
                 new DeckRepository().save(deck);
                 res.status(HTTP_OK);
                 return deck.toJson();
+            } else {
+                res.status(HTTP_BAD_REQUEST);
+                return "";
+            }
+        });
+
+        post("/api/cards/create2", (req, res) ->{
+            CardDocument card = new CardDocument(parse(req.body()));
+            if (notEmpty(card.getDeckId()) && notEmpty(card.getWord()) && notEmpty(card.getTranslation())) {
+                new CardRepository().save(card);
+                new DeckRepository().increaseSize(card.getDeckId());
+                res.status(HTTP_OK);
+                return card.toJson();
             } else {
                 res.status(HTTP_BAD_REQUEST);
                 return "";
