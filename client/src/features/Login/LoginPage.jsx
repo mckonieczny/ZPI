@@ -36,7 +36,7 @@ export default class LoginPage extends React.Component {
     // to extract from file
     loginRequest (username, password) {
        
-        fetch(`http://zpi.herokuapp.com/callback?client_name=FormClient&username=${username}&password=${password}`, {
+        fetch(`//zpi.herokuapp.com/callback?client_name=FormClient&username=${username}&password=${password}`, {
             method: 'POST',
             credentials: 'include',
             

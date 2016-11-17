@@ -1,6 +1,7 @@
 import controllers.*;
 import samples.Samples;
 import security.LoginHandler;
+import server.SparkUtils;
 
 import static server.SparkUtils.getHerokuAssignedPort;
 import static spark.Spark.port;
@@ -32,7 +33,7 @@ public class Main {
 
         Samples.create(loginHandler);
 
-        enableLocalhostCORS();
+        SparkUtils.enableLocalhostCORS();
     }
 
     private static void enableLocalhostCORS() {
