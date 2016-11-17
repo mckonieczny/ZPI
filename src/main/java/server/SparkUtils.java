@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static spark.Spark.before;
+
 /**
  * Created by DjKonik on 2016-10-08.
  */
@@ -69,5 +71,12 @@ public class SparkUtils {
 
     public static boolean isDeployed() {
         return DEPLOYED;
+    }
+
+    public static void enableLocalhostCORS() {
+        before((req, res) -> {
+            res.header("Access-Control-Allow-Origin", "http://localhost");
+            res.header("Access-Control-Allow-Credentials", "true");
+        });
     }
 }

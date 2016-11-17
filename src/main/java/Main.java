@@ -1,9 +1,7 @@
-import controllers.AbstractController;
-import controllers.CardController;
-import controllers.DeckController;
-import controllers.FavoriteController;
+import controllers.*;
 import samples.Samples;
 import security.LoginHandler;
+
 import static server.SparkUtils.getHerokuAssignedPort;
 import static spark.Spark.port;
 import static spark.Spark.staticFileLocation;
@@ -22,6 +20,8 @@ public class Main {
         loginHandler.setLoginRestApi();
         loginHandler.setRegisterRestApi();
 
+        FrontClientController.create();
+
         AbstractController controller = new DeckController();
         controller.registerRestApi();
 
@@ -31,5 +31,10 @@ public class Main {
         new FavoriteController().registerRestApi();
 
         Samples.create(loginHandler);
+
+        enableLocalhostCORS();
+    }
+
+    private static void enableLocalhostCORS() {
     }
 }

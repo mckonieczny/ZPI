@@ -36,11 +36,11 @@ public class Samples {
         CardSample.create(loginHandler);
 
         //formularz logowania
-        get("/login", (req, res) -> new ModelAndView(new HashMap<>(), "login/login.ftl"), templateEngine());
-        redirect.post("/login", "/callback?client_name=FormClient", TEMPORARY_REDIRECT);
+        get("/panel/login", (req, res) -> new ModelAndView(new HashMap<>(), "login/login.ftl"), templateEngine());
+        redirect.post("/panel/login", "/callback?client_name=FormClient", TEMPORARY_REDIRECT);
 
         //formularz rejestracji
-        post("/register", (req, res) -> {
+        post("/panel/register", (req, res) -> {
 
             Map<String, Object> model = new HashMap<>();
 
@@ -68,12 +68,6 @@ public class Samples {
             model.put("template", "TEMPLATE");
             return new ModelAndView(model, "template.ftl");
         }, templateEngine());
-
-        get("/", (req, res) -> getReactPage(), templateEngine());
-        get("/home", (req, res) -> getReactPage(), templateEngine());
-        get("/addDeck", (req, res) -> getReactPage(), templateEngine());
-        get("/decks", (req, res) -> getReactPage(), templateEngine());
-        get("/deck/:deckId", (req, res) -> getReactPage(), templateEngine());
 
         loginHandler.secureUrl("/private");
         get("/private", (req, res) -> {
@@ -127,10 +121,7 @@ public class Samples {
 
     }
 
-    private static ModelAndView getReactPage() {
-        Map<String, Object> model = new HashMap<>();
-        return new ModelAndView(model, "index.ftl");
-    }
+
 
     private static void initDB() throws Exception {
 
