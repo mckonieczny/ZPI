@@ -75,7 +75,7 @@ public class SparkUtils {
 
     public static void enableCORS() {
         before((req, res) -> {
-            res.header("Access-Control-Allow-Origin", "http://" + req.host());
+            res.header("Access-Control-Allow-Origin", "http://" + req.headers("origin"));
             res.header("Access-Control-Allow-Credentials", "true");
         });
     }
