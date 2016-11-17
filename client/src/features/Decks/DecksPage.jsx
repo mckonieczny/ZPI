@@ -7,15 +7,6 @@ import {loadDecks} from './actions';
 class DecksPage extends React.Component {
 
     componentDidMount () {
-        this.fetchDecks();
-    }
-
-    componentDidUpdate () {
-        // console.log('comp did update');
-        // this.fetchDecks();
-    }
-
-    fetchDecks () {
         this.props.loadDecks();
     }
 
@@ -27,10 +18,11 @@ class DecksPage extends React.Component {
 }
 
 
-
+// @TODO use selectors
 const mapStateToProps = state => ({
-    myDecks: state.decks.filter(deck => deck.ownerId === getUserId()),
-    otherDecks: state.decks.filter(deck => deck.ownerId !== getUserId())
+    myDecks: state.deck.decks.filter(deck => deck.ownerId === getUserId()),
+    otherDecks: state.deck.decks.filter(deck => deck.ownerId !== getUserId()),
+    isFetching: state.deck.isFetching
 });
 
 export default connect(mapStateToProps, {loadDecks})(DecksPage);

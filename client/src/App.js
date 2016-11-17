@@ -11,28 +11,34 @@ import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
 import Navbar from './components/Navbar';
 
 
-const muiTheme = getMuiTheme({
-    palette: {
-      textColor: indigo500,
-      primary1Color: indigo500,
-      accent1Color: purple500,
+const getAppBarColor = (notLogged) => notLogged ? '#F5F5F5' : 'white';  
 
-    },
-    appBar: {
-      height: 80,
-      color: 'white',
-      textColor: 'black'
-    },
-});
+const muiTheme = (notLogged) => {
+    const appBarColor = notLogged? '#F5F5F5' : 'white';
+    console.log(appBarColor);
+    return getMuiTheme({
+        palette: {
+          textColor: indigo500,
+          primary1Color: indigo500,
+          accent1Color: purple500,
+
+        },
+        appBar: {
+          height: 80,
+          color: appBarColor,
+          textColor: 'black'
+        },
+    });
+}
 
 class App extends Component {
     render () {
       return (
-        <MuiThemeProvider muiTheme={muiTheme}>
+        <MuiThemeProvider muiTheme={muiTheme(this.props.route.notLogged)}>
           <div className="main">
 
             <div >
-              <Navbar />
+              <Navbar notLogged={this.props.route.notLogged} />
             </div>
 
             <div style={{marginTop: '0px'}}>

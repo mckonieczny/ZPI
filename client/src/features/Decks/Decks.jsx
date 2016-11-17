@@ -4,8 +4,8 @@ import {Row,Col} from 'react-bootstrap';
 import {indigo500} from 'material-ui/styles/colors';
 import {browserHistory} from 'react-router';
 import _ from 'lodash';
-import {connect} from 'react-redux';
 import DeckCard from './DeckCard';
+import Loader from '../../components/Loader';
 
 class Decks extends React.Component {
 
@@ -20,19 +20,25 @@ class Decks extends React.Component {
     }
 
    renderMyDecks () {
+     if (this.props.isFetching) {
+       return <Loader />;
+     }
       return this.props.myDecks.map((deck) => (
-          <Col key={deck._id} md={4}>
+          <Col key={deck._id.$oid} md={4}>
               <DeckCard key={deck._id} name={deck.name} creatorName={'Not Logged'} actionLabel={'Edit'}
-                description={deck.description} onAction={_.partial(this.buttonClicked, deck._id)} />
+                description={deck.description} onAction={_.partial(this.buttonClicked, deck._id.$oid)} />
           </Col>
       ));
    }
 
    renderOtherDecks() {
+     if (this.props.isFetching) {
+       return <Loader />;
+     }
      return this.props.otherDecks.map((deck) => (
-       <Col md={4}>
+       <Col key={deck._id.$oid} md={4}>
          <DeckCard key={deck._id} name={deck.name} creatorName={'Not Logged'} actionLabel={'View'}
-           description={deck.description} onAction={_.partial(this.buttonClicked, deck._id)} />
+           description={deck.description} onAction={_.partial(this.buttonClicked, deck._id.$oid)} />
        </Col>
      ));
    }
@@ -89,8 +95,5 @@ Decks.defaultProps = {
     otherDecks: [],
 };
 
-const mapStateToProps = state => ({
-    decks: state
-});
 
-export default connect(mapStateToProps)(Decks);
+export default Decks;

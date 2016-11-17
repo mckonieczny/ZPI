@@ -97,7 +97,6 @@ export default class Navbar extends React.Component {
    }
 
     render () {
-
       const loggedUser = {
           username: 'not logged',
           emails : [
@@ -146,14 +145,17 @@ export default class Navbar extends React.Component {
 
 
         return (
+            
           <div className="app-bar">
             <AppBar
-              title={this.props.title}
-              titleStyle={titleStyle}
-              className="app-bar"
-              iconElementLeft={<IconButton onClick={this.handleOpenMenu}><MenuIcon /></IconButton>}
-              iconElementRight={  <FlatButton label="Log out" style={buttonStyle} onClick={this.handleLogout}/> }
-              >
+                zDepth={this.props.notLogged ? 0 : 1}
+                showMenuIconButton={!this.props.notLogged}
+                title={this.props.title}
+                titleStyle={titleStyle}
+                className="app-bar"
+                iconElementLeft={this.props.notLogged ? null : <IconButton onClick={this.handleOpenMenu}><MenuIcon /></IconButton>}
+                iconElementRight={this.props.notLogged ? null : <FlatButton label="Log out" style={buttonStyle} onClick={this.handleLogout}/> }
+            >   
 
             </AppBar >
             
