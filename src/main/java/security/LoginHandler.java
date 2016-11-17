@@ -17,7 +17,7 @@ import spark.Route;
 import java.util.Optional;
 
 import static security.SecurityConfig.*;
-import static server.SparkUtils.notEmpty;
+import static server.SparkUtils.*;
 import static spark.Redirect.Status.TEMPORARY_REDIRECT;
 import static spark.Spark.*;
 
@@ -42,7 +42,7 @@ public class LoginHandler {
     public LoginHandler() {
 
         config =  new SecurityConfig().build();
-        callback = new CallbackRoute(config, URL_LOGGED_USER_REST_API);
+        callback = new CallbackRoute(config, isDeployed() ? PROD_URL + URL_LOGGED_USER_REST_API : URL_LOGGED_USER_REST_API);
 
         get(URL_CALLBACK, callback);
         post(URL_CALLBACK, callback);

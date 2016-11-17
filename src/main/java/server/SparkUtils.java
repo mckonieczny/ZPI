@@ -20,6 +20,7 @@ import static spark.Spark.before;
 public class SparkUtils {
 
     private static boolean DEPLOYED = false;
+    public static String PROD_URL = "https://zpi.herokuapp.com";
     private static String DEPLOYED_RESOURCES_PATH = "/app/build/resources/main";
 
     private final static TemplateEngine templateEngine = new FreeMarkerEngine();
