@@ -33,7 +33,7 @@ public class Main {
 
         Samples.create(loginHandler);
 
-        SparkUtils.enableLocalhostCORS();
+        SparkUtils.enableCORS();
     }
 
     private static void enableLocalhostCORS() {

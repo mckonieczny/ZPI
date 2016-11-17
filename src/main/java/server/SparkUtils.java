@@ -73,9 +73,9 @@ public class SparkUtils {
         return DEPLOYED;
     }
 
-    public static void enableLocalhostCORS() {
+    public static void enableCORS() {
         before((req, res) -> {
-            res.header("Access-Control-Allow-Origin", "http://localhost");
+            res.header("Access-Control-Allow-Origin", "http://" + req.host());
             res.header("Access-Control-Allow-Credentials", "true");
         });
     }
