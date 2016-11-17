@@ -35,7 +35,4 @@ public class Main {
 
         SparkUtils.enableCORS();
     }
-
-    private static void enableLocalhostCORS() {
-    }
 }
