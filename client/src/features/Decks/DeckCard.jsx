@@ -14,7 +14,7 @@ const DeckCard = ({name, description, creatorName, actionLabel, onAction}) => (
       <CardMedia
         overlay={<CardTitle title={name} subtitle={description} />}
       >
-        <img src={`images/deckImages/${_.random(1, 4, false)}.jpg`} />
+        <img src={`images/deckImages/1.jpg`} />
       </CardMedia>
       {creatorName?
         <CardText >

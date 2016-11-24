@@ -14,9 +14,15 @@ export function* loadDecks () {
     yield put(loadedDecks(decks));
 }
 
+export function* createDeck () {
+    // const newDeck = 
+}
+
 export function* watchLoadDecks () {
     yield* throttle(2000, LOAD_DECKS, loadDecks);
 }
+
+
 
 const deckSagas = [helloSaga, watchLoadDecks];
 export default deckSagas;

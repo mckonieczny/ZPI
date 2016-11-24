@@ -13,7 +13,7 @@ module.exports = {
       path.resolve(ROOT, 'public'),
       path.resolve(ROOT, 'src')
     ],
-    extensions: ['', '.js', '.jsx']
+    extensions: ['', '.js', '.jsx', '.json']
   },
   output: {
     path: DEST,

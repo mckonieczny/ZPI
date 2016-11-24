@@ -12,12 +12,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import static spark.Spark.before;
+
 /**
  * Created by DjKonik on 2016-10-08.
  */
 public class SparkUtils {
 
     private static boolean DEPLOYED = false;
+    public static String PROD_URL = "https://zpi.herokuapp.com";
     private static String DEPLOYED_RESOURCES_PATH = "/app/build/resources/main";
 
     private final static TemplateEngine templateEngine = new FreeMarkerEngine();
@@ -69,5 +72,12 @@ public class SparkUtils {
 
     public static boolean isDeployed() {
         return DEPLOYED;
+    }
+
+    public static void enableCORS() {
+        before((req, res) -> {
+            res.header("Access-Control-Allow-Origin", req.headers("Origin"));
+            res.header("Access-Control-Allow-Credentials", "true");
+        });
     }
 }
