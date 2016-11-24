@@ -15,7 +15,8 @@ public class Main {
 
     public static void main(String[] args) {
 
-        port(getHerokuAssignedPort());
+//        port(getHerokuAssignedPort());
+        port(3000);
         staticFileLocation("/public");
 
         LoginHandler loginHandler = new LoginHandler();

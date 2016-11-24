@@ -6,13 +6,14 @@ import database.document.FavoriteDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
-
 import java.util.List;
 
+import static org.bson.Document.parse;
 import static database.mongo.MongoUtils.toJson;
 import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
 import static security.LoginHandler.loggedUserId;
+import static server.SparkUtils.notEmpty;
 import static spark.Spark.*;
 
 
@@ -53,16 +54,12 @@ public class DeckController extends AbstractController {
         });
 
         post("/api/decks/create", (req, resp)-> {
-            String owner = req.queryParams("ownerId");
-            String name = req.queryParams("name");
-            String description = req.queryParams("description");
             String response = "";
             try{
-                int difficulty = Integer.parseInt(req.queryParams("difficulty"));
+                DeckDocument deck = new DeckDocument(parse(req.body()));
 
-                if(owner != null && !owner.isEmpty()
-                        && name != null && !name.isEmpty()) {
-                    DeckDocument deck = new DeckDocument(owner, name, description, difficulty);
+                int dif = deck.getDifficulty();
+                if(notEmpty(deck.getOwnerId()) && notEmpty(deck.getName()) && dif > 0 && dif <= 5) {
                     deckRepository.save(deck);
                     resp.status(HTTP_OK);
                     response = deck.getId();
@@ -70,9 +67,9 @@ public class DeckController extends AbstractController {
                     resp.status(HTTP_BAD_REQUEST);
                     response = "Owner or name is missing";
                 }
-            } catch (NumberFormatException exception){
+            } catch (ClassCastException exception){
                 resp.status(HTTP_BAD_REQUEST);
-                response = "bad format of difficulty";
+                response = "Bad format of difficulty";
             }catch (Exception  e){
                 resp.status(HTTP_INTERNAL_ERROR);
                 response = e.getMessage();
@@ -81,7 +78,7 @@ public class DeckController extends AbstractController {
             return response;
         });
 
-        delete("/api/decks/delete/:id", (req, resp) -> {
+        delete("/api/decks/:id/delete", (req, resp) -> {
             String result = "";
             String id = req.params("id");
             if(id!=null && !id.isEmpty()){

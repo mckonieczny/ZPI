@@ -81,7 +81,5 @@ public class CardController extends AbstractController {
             }
             return result;
         });
-
-
     }
 }

@@ -68,4 +68,11 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
             updateSize(deckId, deck.getSize() + 1);
         }
     }
+
+    public void decreaseSize(String deckId){
+        DeckDocument deck =  findByDeckId(deckId);
+        if(deck != null){
+            updateSize(deckId, deck.getSize()-1);
+        }
+    }
 }
