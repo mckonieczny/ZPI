@@ -81,7 +81,7 @@ public class DeckController extends AbstractController {
         delete("/api/decks/:id/delete", (req, resp) -> {
             String result = "";
             String id = req.params("id");
-            if(id!=null && !id.isEmpty()){
+            if(notEmpty(id)){
                 try{
                     Object deck = deckRepository.delete(id);
                     CardRepository cardRepository = new CardRepository();

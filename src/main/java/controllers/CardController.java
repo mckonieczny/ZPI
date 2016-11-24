@@ -1,14 +1,16 @@
 package controllers;
 
 import database.document.CardDocument;
-import database.document.DeckDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
-
 import java.util.Map;
 
+import static database.mongo.MongoUtils.toJson;
+import static server.SparkUtils.notEmpty;
+import static org.bson.Document.parse;
 import static java.net.HttpURLConnection.*;
 import static spark.Spark.delete;
+import static spark.Spark.get;
 import static spark.Spark.post;
 
 /**
@@ -26,27 +28,15 @@ public class CardController extends AbstractController {
     public void registerRestApi() {
 
         post("/api/cards/create", (request, response) ->{
-            String deckId = request.queryParams("deckId");
-            String word = request.queryParams("word");
-            String translation = request.queryParams("translation");
             String result = "";
-            if(deckId != null && !deckId.isEmpty()
-                    && word != null && !word.isEmpty()
-                    && translation != null && !translation.isEmpty()){
+            CardDocument card =  new CardDocument(parse(request.body()));
+            if(notEmpty(card.getDeckId()) && notEmpty(card.getWord()) && notEmpty(card.getTranslation())){
                 try{
-                    CardDocument card = new CardDocument(deckId, word, translation);
                     DeckRepository deckRepository = new DeckRepository();
-                    DeckDocument deck = deckRepository.findByDeckId(deckId);
-                    if(deck != null) {
-                        this.repository.save(card);
-                        deck.setSize(deck.getSize() + 1);
-                        deckRepository.updateSize(deck.getId(), deck.getSize());
-                        result = card.getId();
-                        response.status(HTTP_OK);
-                    }else {
-                        response.status(HTTP_NOT_FOUND);
-                        result = "Deck with given id does not exists";
-                    }
+                    deckRepository.increaseSize(card.getDeckId());
+                    this.repository.save(card);
+                    result = card.getId();
+                    response.status(HTTP_OK);
                 }catch (Exception e){
                     response.status(HTTP_INTERNAL_ERROR);
                     result = e.getMessage();
@@ -57,17 +47,15 @@ public class CardController extends AbstractController {
             return result;
         });
 
-        delete("/api/cards/delete/:id", (request, response) -> {
+        delete("/api/cards/:id/delete", (request, response) -> {
             String cardId = request.params("id");
             String result = "";
-            if(cardId != null && !cardId.isEmpty()) {
+            if(notEmpty(cardId)) {
                 try{
                     Map<String, String> card = repository.findById(cardId);
                     String deckId = card.get(CardDocument.M_DECK_ID);
                     DeckRepository deckRepository = new DeckRepository();
-                    DeckDocument deck = deckRepository.findByDeckId(deckId);
-                    deck.setSize(deck.getSize() - 1);
-                    deckRepository.updateSize(deck.getId(), deck.getSize());
+                    deckRepository.decreaseSize(deckId);
                     repository.deleteById(cardId);
                     response.status(HTTP_OK);
                 }
@@ -81,5 +69,8 @@ public class CardController extends AbstractController {
             }
             return result;
         });
+
+        get("/api/cards", (request, response) -> toJson(repository.findAll()));
+
     }
 }
