@@ -85,10 +85,10 @@ public class LoginHandler {
         secureUrl(URL_LOGGED_USER_REST_API);
         get(URL_LOGGED_USER_REST_API, this::userInfo);
 
-        secureUrl("/api/login/facebook", FACEBOOK_AUTH);
-        get("/api/login/facebook", this::userInfo);
+        secureUrl("/panel/login/facebook", FACEBOOK_AUTH);
+        get("/panel/login/facebook", this::userInfo);
 
-        get("/api/login/facebook/:token", this::loginUserWithToken);
+        get("/api/login/facebook", this::loginUserWithToken);
     }
 
     public void setRegisterRestApi() {
@@ -142,7 +142,7 @@ public class LoginHandler {
         CustomFacebookClient facebookClient = config.getClients().findClient(CustomFacebookClient.class);
         SparkWebContext context = new SparkWebContext(req, res);
         facebookClient.init(context);
-        FacebookProfile profile = facebookClient.retrieveUserProfileFromToken(req.params(":token"));
+        FacebookProfile profile = facebookClient.retrieveUserProfileFromToken(req.params("token"));
 
         if (profile != null) {
 
