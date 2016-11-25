@@ -12,6 +12,7 @@ import static database.document.UserDocument.M_USERNAME;
 import static database.mongo.MongoConfig.MONGO_DATABASE;
 import static database.mongo.MongoConnection.getMongoClient;
 import static database.repository.UserRepository.C_USER;
+import static server.SparkUtils.getAppUrl;
 
 
 /**
@@ -19,10 +20,10 @@ import static database.repository.UserRepository.C_USER;
  */
 public class SecurityConfig implements ConfigFactory {
 
-    public final static String FORM_CLIENT = "FormClient";
+    public final static String FORM_AUTH = "FormClient";
+    public final static String FACEBOOK_AUTH = "CustomFacebookClient";
 
     public final static String URL_CALLBACK = "/callback";
-    public final static String URL_LOGIN_FORM = "/login";
     public final static String URL_LOGIN_REST_API = "/api/login";
     public final static String URL_LOGGED_USER_REST_API = "/api/user";
     public final static String URL_LOGOUT = "/logout";
@@ -30,16 +31,22 @@ public class SecurityConfig implements ConfigFactory {
     @Override
     public Config build() {
 
-        //FormClient formClient = new FormClient(URL_LOGIN_FORM, getMongoAuthenticator());
+        CustomFacebookClient facebookClient = new CustomFacebookClient("1687234428253692", "a4a1c4cae046303bc14f15c7eb495c5a");
+        facebookClient.setFields("id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work");
+
         FormClient formClient = new FormClient(URL_LOGIN_REST_API, getMongoAuthenticator());
 
-        Clients clients = new Clients(URL_CALLBACK, formClient);
+        Clients clients = new Clients(callbackUrl(), facebookClient, formClient);
 
         Config config = new Config(clients);
         //config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
         config.setHttpActionAdapter(new HttpActionAdapter());
 
         return config;
+    }
+
+    private String callbackUrl() {
+        return getAppUrl() + URL_CALLBACK;
     }
 
     private MongoAuthenticator getMongoAuthenticator() {

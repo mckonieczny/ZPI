@@ -15,13 +15,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
-import static java.net.HttpURLConnection.*;
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_OK;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
 import static security.PasswordHash.createHash;
-import static server.SparkUtils.notEmpty;
-import static server.SparkUtils.renderContent;
-import static server.SparkUtils.templateEngine;
+import static server.SparkUtils.*;
 import static spark.Redirect.Status.TEMPORARY_REDIRECT;
 import static spark.Spark.*;
 

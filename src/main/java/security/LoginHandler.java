@@ -6,6 +6,8 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.oauth.client.FacebookClient;
+import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.sparkjava.ApplicationLogoutRoute;
 import org.pac4j.sparkjava.CallbackRoute;
 import org.pac4j.sparkjava.SecurityFilter;
@@ -18,7 +20,6 @@ import java.util.Optional;
 
 import static security.SecurityConfig.*;
 import static server.SparkUtils.*;
-import static spark.Redirect.Status.TEMPORARY_REDIRECT;
 import static spark.Spark.*;
 
 /**
@@ -27,27 +28,44 @@ import static spark.Spark.*;
 public class LoginHandler {
 
     private static final int CODE_SUCCESS = 200;
-    private static final int CODE_ERROR = 403;
+    private static final int CODE_ERROR = 400;
 
     private static final String M_AUTH = "\"auth\"";
     private static final String M_PROFILE = "\"user\"";
     private static final String M_PROFILE_USERNAME = "\"username\"";
     private static final String M_PROFILE_ID = "\"userId\"";
 
-
     private UserRepository userRepository = new UserRepository();
     private Config config;
     private Route callback;
+    private SecurityFilter commonFilter;
 
     public LoginHandler() {
 
         config =  new SecurityConfig().build();
-        callback = new CallbackRoute(config, isDeployed() ? PROD_URL + URL_LOGGED_USER_REST_API : URL_LOGGED_USER_REST_API);
+        callback = new CallbackRoute(config, isDeployed() ? PROD_URL + URL_LOGGED_USER_REST_API : URL_LOGGED_USER_REST_API, true);
+        commonFilter = new SecurityFilter(config, null);
 
         get(URL_CALLBACK, callback);
         post(URL_CALLBACK, callback);
 
         get(URL_LOGOUT, new ApplicationLogoutRoute(config, "/"));
+
+        get("/logoutFB", (req, res) -> {
+
+            Optional<CommonProfile> profile  =  getProfile(req, res);
+            if (profile.isPresent()) {
+                String fbLogoutUrl = "https://www.facebook.com/logout.php?next=" + getAppUrl() + URL_LOGOUT + "&access_token=" + profile.get().getAttribute("access_token");
+                res.redirect(fbLogoutUrl);
+            } else {
+                res.redirect(URL_LOGOUT);
+            }
+
+            return "";
+        });
+
+
+
     }
 
     public Config getConfig() {
@@ -55,19 +73,22 @@ public class LoginHandler {
         return config;
     }
 
+    class MyFB extends FacebookClient {
+
+    }
+
     public void setLoginRestApi() {
 
-        get(URL_LOGIN_REST_API, (req, res) -> responseError());
-        redirect.post(URL_LOGIN_REST_API, callbackUrl(), TEMPORARY_REDIRECT);
+        secureUrl(URL_LOGIN_REST_API);
+        get(URL_LOGGED_USER_REST_API, this::userInfo);
 
         secureUrl(URL_LOGGED_USER_REST_API);
-        get(URL_LOGGED_USER_REST_API, (req, res) -> {
-            //TODO ciasteczko zalogowanej sesji ustawiane na godzinę
-            res.cookie("/", "JSESSIONID", req.cookie("JSESSIONID"), 60*60, false);
-            return getProfile(req, res)
-                    .map(this::responseSuccess)
-                    .orElse(responseError());
-        });
+        get(URL_LOGGED_USER_REST_API, this::userInfo);
+
+        secureUrl("/api/login/facebook", FACEBOOK_AUTH);
+        get("/api/login/facebook", this::userInfo);
+
+        get("/api/login/facebook/:token", this::loginUserWithToken);
     }
 
     public void setRegisterRestApi() {
@@ -100,7 +121,7 @@ public class LoginHandler {
                 UserDocument user = new UserDocument(username, PasswordHash.createHash(password));
                 userRepository.save(user);
 
-                return responseSuccess(user);
+                return responseSuccessMongo(user);
             } else {
                 return responseError();
             }
@@ -109,25 +130,75 @@ public class LoginHandler {
     }
 
     public void secureUrl(String url) {
-        before(url, (req, res) -> {
-            new SecurityFilter(config, FORM_CLIENT);
-        });
+        before(url, commonFilter);
+    }
+
+    public void secureUrl(String url, String authenticator) {
+        before(url, new SecurityFilter(config, authenticator));
+    }
+
+    private String loginUserWithToken(Request req, Response res) {
+
+        CustomFacebookClient facebookClient = config.getClients().findClient(CustomFacebookClient.class);
+        SparkWebContext context = new SparkWebContext(req, res);
+        facebookClient.init(context);
+        FacebookProfile profile = facebookClient.retrieveUserProfileFromToken(req.params(":token"));
+
+        if (profile != null) {
+
+            ProfileManager manager = new ProfileManager(context);
+            profile.setClientName(FACEBOOK_AUTH);
+            manager.save(true, profile, false);
+
+            return responseSuccess(profile);
+        }
+        else {
+            return responseError();
+        }
+    }
+
+    private String userInfo(Request req, Response res) {
+        //TODO ciasteczko zalogowanej sesji ustawiane na godzinę
+        String sessionId = req.cookie("JSESSIONID");
+        if (notEmpty(sessionId)) {
+            res.cookie("/", "JSESSIONID", sessionId, 60*60, false);
+        }
+        return getProfile(req, res)
+                .map(this::responseSuccess)
+                .orElse(responseError());
     }
 
     private String responseSuccess(CommonProfile profile) {
 
-        UserDocument user = userRepository.findByName(profile.getId()); // TODO wsyzstkie dane dostepne z poziomu CommonProfile
+        switch (profile.getClientName()) {
+            case FORM_AUTH:
+                UserDocument user = userRepository.findByName(profile.getId()); // TODO wsyzstkie dane dostepne z poziomu CommonProfile
+                return responseSuccessMongo(user);
+            case FACEBOOK_AUTH:
+                //TODO może będzie trzeba zapisać profil w bd
+                return responseSuccessFacebook(profile);
+        }
+        return responseError();
+    }
 
-        return responseSuccess(user);
-    };
-
-    private String responseSuccess(UserDocument user) {
+    private String responseSuccessMongo(UserDocument user) {
 
         return "{" +
             M_AUTH + ":" + CODE_SUCCESS + "," +
             M_PROFILE + ":" + "{" +
                 M_PROFILE_USERNAME + ":\"" + user.getUsername() + "\"," +
                 M_PROFILE_ID + ":\"" + user.getId() +  "\"" +
+            "}" +
+        "}";
+    }
+
+    private String responseSuccessFacebook(CommonProfile profile) {
+
+        return "{" +
+            M_AUTH + ":" + CODE_SUCCESS + "," +
+            M_PROFILE + ":" + "{" +
+                M_PROFILE_USERNAME + ":\"" + profile.getAttribute("name") + "\"," +
+                M_PROFILE_ID + ":\"" + profile.getAttribute("third_party_id") +  "\"" +
             "}" +
         "}";
     }

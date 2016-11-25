@@ -21,6 +21,7 @@ public class SparkUtils {
 
     private static boolean DEPLOYED = false;
     public static String PROD_URL = "https://zpi.herokuapp.com";
+    public static String LOCAL_URL = "http://localhost:4567";
     private static String DEPLOYED_RESOURCES_PATH = "/app/build/resources/main";
 
     private final static TemplateEngine templateEngine = new FreeMarkerEngine();
@@ -75,9 +76,17 @@ public class SparkUtils {
     }
 
     public static void enableCORS() {
-        before((req, res) -> {
+        before("*", (req, res) -> {
             res.header("Access-Control-Allow-Origin", req.headers("Origin"));
             res.header("Access-Control-Allow-Credentials", "true");
         });
+    }
+
+    public static String getAppUrl() {
+        if (isDeployed()) {
+            return PROD_URL;
+        } else {
+            return LOCAL_URL;
+        }
     }
 }

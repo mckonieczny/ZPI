@@ -1,8 +1,1 @@
-<html>
-<head>
-    <title>Forbidden</title>
-</head>
-<body>
-<h1>Forbidden</h1>
-</body>
-</html>
+{"auth":403}
