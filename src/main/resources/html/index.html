@@ -75,7 +75,7 @@
 
       window.fbAsyncInit = function() {
       FB.init({
-        appId      : '1687234428253692',
+        appId      : (location.hostname === "zpi.herokuapp.com") ? "1689218041388664" : "1687234428253692",
         cookie     : true,
         xfbml      : true,
         version    : 'v2.8'

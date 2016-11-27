@@ -16,6 +16,7 @@ import static database.mongo.MongoConfig.MONGO_DATABASE;
 import static database.mongo.MongoConnection.getMongoClient;
 import static database.repository.UserRepository.C_USER;
 import static server.SparkUtils.getAppUrl;
+import static server.SparkUtils.isDeployed;
 
 
 /**
@@ -36,7 +37,7 @@ public class SecurityConfig implements ConfigFactory {
     @Override
     public Config build() {
 
-        CustomFacebookClient facebookClient = new CustomFacebookClient("1687234428253692", "a4a1c4cae046303bc14f15c7eb495c5a");
+        CustomFacebookClient facebookClient = new CustomFacebookClient(isDeployed() ? "1689218041388664" : "1687234428253692", "a4a1c4cae046303bc14f15c7eb495c5a");
         facebookClient.setFields("id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work");
 
         FormClient formClient = new FormClient(URL_LOGIN_REST_API, getMongoAuthenticator());
