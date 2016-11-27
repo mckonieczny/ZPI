@@ -1,4 +1,8 @@
+//components
 import LoginPage from './LoginPage';
 import SignupPage from './SignupPage';
 
-export {LoginPage, SignupPage};
+//sagas
+import loginSagas from './sagas';
+
+export {LoginPage, SignupPage, loginSagas};

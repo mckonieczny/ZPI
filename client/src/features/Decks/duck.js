@@ -6,7 +6,6 @@ import {combineReducers} from 'redux';
 export const decks = (state = [], action) => {
     switch (action.type) {
         case CREATE_DECK: {
-            debugger;
             const newState = [...state, action.data];
             return newState;
         }

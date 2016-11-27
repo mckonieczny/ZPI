@@ -3,16 +3,15 @@ import {TextField, RaisedButton, FlatButton} from 'material-ui';
 import {yellow700} from 'material-ui/styles/colors';
 import {Col} from 'react-bootstrap';
 import {browserHistory} from 'react-router';
-import {login} from '../../api/login';
-
-// const MOCK = true;
+import {connect} from 'react-redux';
+import {logIn} from './actions';
 
 const headerStyle = {
     fontFamily: '"Dancing Script", Georgia, Times, serif',
     textAlign: 'center',
 };
 
-export default class LoginPage extends React.Component {
+class LoginPage extends React.Component {
     constructor () {
         super();
         this.submitForm = this.submitForm.bind(this);
@@ -35,14 +34,7 @@ export default class LoginPage extends React.Component {
 
     // to extract from file
     loginRequest (username, password) {
-       
-        fetch(`//zpi.herokuapp.com/callback?client_name=FormClient&username=${username}&password=${password}`, {
-            method: 'POST',
-            credentials: 'include',
-            
-        })
-            .then(res => res.json())
-            .then((data) => {console.log(data);});
+        this.props.logIn(username, password);
     }
 
     submitForm (ev) {
@@ -124,3 +116,5 @@ export default class LoginPage extends React.Component {
         );
     }
 }
+
+export default connect(null, {logIn})(LoginPage);
