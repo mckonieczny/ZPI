@@ -6,6 +6,7 @@ import org.pac4j.core.config.Config;
 import org.pac4j.core.profile.CommonProfile;
 import org.pac4j.core.profile.ProfileManager;
 import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.jwt.profile.JwtGenerator;
 import org.pac4j.oauth.client.FacebookClient;
 import org.pac4j.oauth.profile.facebook.FacebookProfile;
 import org.pac4j.sparkjava.ApplicationLogoutRoute;
@@ -34,8 +35,10 @@ public class LoginHandler {
     private static final String M_PROFILE = "\"user\"";
     private static final String M_PROFILE_USERNAME = "\"username\"";
     private static final String M_PROFILE_ID = "\"userId\"";
+    private static final String M_TOKEN = "\"token\"";
 
     private UserRepository userRepository = new UserRepository();
+    private JwtGenerator<CommonProfile> tokenGenerator = new JwtGenerator<>();
     private Config config;
     private Route callback;
     private SecurityFilter commonFilter;
@@ -64,8 +67,6 @@ public class LoginHandler {
             return "";
         });
 
-
-
     }
 
     public Config getConfig() {
@@ -88,7 +89,14 @@ public class LoginHandler {
         secureUrl("/panel/login/facebook", FACEBOOK_AUTH);
         get("/panel/login/facebook", this::userInfo);
 
+        secureUrl("/api/login/direct", DIRECT_AUTH);
+        get("/api/login/direct", this::userInfo);
+
         get("/api/login/facebook", this::loginUserWithToken);
+
+        //TODO test uwierzytelnienia tokenem
+        secureUrl("/panel/token", TOKEN_AUTH);
+        get("/panel/token", this::userInfo);
     }
 
     public void setRegisterRestApi() {
@@ -142,7 +150,7 @@ public class LoginHandler {
         CustomFacebookClient facebookClient = config.getClients().findClient(CustomFacebookClient.class);
         SparkWebContext context = new SparkWebContext(req, res);
         facebookClient.init(context);
-        FacebookProfile profile = facebookClient.retrieveUserProfileFromToken(req.params("token"));
+        FacebookProfile profile = facebookClient.retrieveUserProfileFromToken(req.queryParams("token"));
 
         if (profile != null) {
 
@@ -170,18 +178,30 @@ public class LoginHandler {
 
     private String responseSuccess(CommonProfile profile) {
 
-        switch (profile.getClientName()) {
-            case FORM_AUTH:
-                UserDocument user = userRepository.findByName(profile.getId()); // TODO wsyzstkie dane dostepne z poziomu CommonProfile
-                return responseSuccessMongo(user);
-            case FACEBOOK_AUTH:
-                //TODO może będzie trzeba zapisać profil w bd
+        switch (profile.getClass().getSimpleName()) {
+            case "FacebookProfile":
                 return responseSuccessFacebook(profile);
+            case "MongoProfile":
+                return responseSuccessMongo(profile);
         }
         return responseError();
     }
 
-    private String responseSuccessMongo(UserDocument user) {
+    private String responseSuccessMongo(CommonProfile profile) {
+
+        UserDocument user = userRepository.findByName(profile.getId()); // TODO wsyzstkie dane dostepne z poziomu CommonProfile
+
+        return "{" +
+            M_AUTH + ":" + CODE_SUCCESS + "," +
+            M_PROFILE + ":" + "{" +
+                M_PROFILE_USERNAME + ":\"" + user.getUsername() + "\"," +
+                M_PROFILE_ID + ":\"" + user.getId() +  "\"" +
+                (profile.containsAttribute("iat") ? "" : M_TOKEN + ":\"" + tokenGenerator.generate(profile) +  "\"") +
+            "}" +
+        "}";
+    }
+
+    private String responseSuccessMongo( UserDocument user) {
 
         return "{" +
             M_AUTH + ":" + CODE_SUCCESS + "," +
@@ -199,6 +219,7 @@ public class LoginHandler {
             M_PROFILE + ":" + "{" +
                 M_PROFILE_USERNAME + ":\"" + profile.getAttribute("name") + "\"," +
                 M_PROFILE_ID + ":\"" + profile.getAttribute("third_party_id") +  "\"" +
+                (profile.containsAttribute("iat") ? "" : M_TOKEN + ":\"" + tokenGenerator.generate(profile) +  "\"") +
             "}" +
         "}";
     }

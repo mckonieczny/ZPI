@@ -4,7 +4,10 @@ import com.mongodb.MongoClient;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.core.config.ConfigFactory;
+import org.pac4j.http.client.direct.ParameterClient;
 import org.pac4j.http.client.indirect.FormClient;
+import org.pac4j.http.client.indirect.IndirectBasicAuthClient;
+import org.pac4j.jwt.credentials.authenticator.JwtAuthenticator;
 import org.pac4j.mongo.credentials.authenticator.MongoAuthenticator;
 
 import static database.document.UserDocument.M_PASSWORD;
@@ -22,6 +25,8 @@ public class SecurityConfig implements ConfigFactory {
 
     public final static String FORM_AUTH = "FormClient";
     public final static String FACEBOOK_AUTH = "CustomFacebookClient";
+    public final static String DIRECT_AUTH = "IndirectBasicAuthClient";
+    public final static String TOKEN_AUTH = "ParameterClient";
 
     public final static String URL_CALLBACK = "/callback";
     public final static String URL_LOGIN_REST_API = "/api/login";
@@ -35,8 +40,13 @@ public class SecurityConfig implements ConfigFactory {
         facebookClient.setFields("id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work");
 
         FormClient formClient = new FormClient(URL_LOGIN_REST_API, getMongoAuthenticator());
+        IndirectBasicAuthClient indirectBasicAuthClient = new IndirectBasicAuthClient(getMongoAuthenticator());
 
-        Clients clients = new Clients(callbackUrl(), facebookClient, formClient);
+        ParameterClient parameterClient = new ParameterClient("token", new JwtAuthenticator());
+        parameterClient.setSupportGetRequest(true);
+        parameterClient.setSupportPostRequest(true);
+
+        Clients clients = new Clients(callbackUrl(), facebookClient, formClient, indirectBasicAuthClient, parameterClient);
 
         Config config = new Config(clients);
         //config.addAuthorizer("admin", new RequireAnyRoleAuthorizer("ROLE_ADMIN"));
