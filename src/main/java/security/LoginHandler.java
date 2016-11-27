@@ -196,7 +196,7 @@ public class LoginHandler {
             M_PROFILE + ":" + "{" +
                 M_PROFILE_USERNAME + ":\"" + user.getUsername() + "\"," +
                 M_PROFILE_ID + ":\"" + user.getId() +  "\"" +
-                (profile.containsAttribute("iat") ? "" : M_TOKEN + ":\"" + tokenGenerator.generate(profile) +  "\"") +
+                (profile.containsAttribute("iat") ? "" : "," + M_TOKEN + ":\"" + tokenGenerator.generate(profile) +  "\"") +
             "}" +
         "}";
     }
@@ -219,7 +219,7 @@ public class LoginHandler {
             M_PROFILE + ":" + "{" +
                 M_PROFILE_USERNAME + ":\"" + profile.getAttribute("name") + "\"," +
                 M_PROFILE_ID + ":\"" + profile.getAttribute("third_party_id") +  "\"" +
-                (profile.containsAttribute("iat") ? "" : M_TOKEN + ":\"" + tokenGenerator.generate(profile) +  "\"") +
+                (profile.containsAttribute("iat") ? "" : "," + M_TOKEN + ":\"" + tokenGenerator.generate(profile) +  "\"") +
             "}" +
         "}";
     }
