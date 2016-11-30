@@ -79,6 +79,7 @@ public class SparkUtils {
         before("*", (req, res) -> {
             res.header("Access-Control-Allow-Origin", req.headers("Origin"));
             res.header("Access-Control-Allow-Credentials", "true");
+            res.header("Access-Control-Allow-Methods", "GET, POST, DELETE, PUT");
         });
     }
 
