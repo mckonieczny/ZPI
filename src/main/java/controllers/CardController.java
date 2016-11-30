@@ -72,5 +72,8 @@ public class CardController extends AbstractController {
 
         get("/api/cards", (request, response) -> toJson(repository.findAll()));
 
+        get("/api/decks/:id", (req, res) -> toJson(repository.findByDeckId(req.params(":id"))));
+
+
     }
 }
