@@ -37,7 +37,7 @@ public class SecurityConfig implements ConfigFactory {
     @Override
     public Config build() {
 
-        CustomFacebookClient facebookClient = new CustomFacebookClient(isDeployed() ? "1689218041388664" : "1687234428253692", "a4a1c4cae046303bc14f15c7eb495c5a");
+        CustomFacebookClient facebookClient = new CustomFacebookClient(isDeployed() ? "1687234428253692" : "1689218041388664", isDeployed() ? "a4a1c4cae046303bc14f15c7eb495c5a" : "b15973ce9e07cf41d3839d597475c26a");
         facebookClient.setFields("id,name,first_name,middle_name,last_name,gender,locale,languages,link,third_party_id,timezone,updated_time,verified,birthday,education,email,hometown,interested_in,location,political,favorite_athletes,favorite_teams,quotes,relationship_status,religion,significant_other,website,work");
 
         FormClient formClient = new FormClient(URL_LOGIN_REST_API, getMongoAuthenticator());
