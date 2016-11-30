@@ -1,5 +1,8 @@
 package server;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import spark.TemplateEngine;
 import spark.template.freemarker.FreeMarkerEngine;
 
@@ -11,6 +14,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static spark.Spark.before;
 
@@ -88,5 +93,20 @@ public class SparkUtils {
         } else {
             return LOCAL_URL;
         }
+    }
+
+    public static List<String> splitJsonArray(String jsonArray) throws IOException, InstantiationException, IllegalAccessException {
+        List<String> splittedJsonElements = new ArrayList<String>();
+        ObjectMapper jsonMapper = new ObjectMapper();
+        JsonNode jsonNode = jsonMapper.readTree(jsonArray);
+
+        if (jsonNode.isArray()) {
+            ArrayNode arrayNode = (ArrayNode) jsonNode;
+            for (int i = 0; i < arrayNode.size(); i++) {
+                JsonNode individualElement = arrayNode.get(i);
+                splittedJsonElements.add(individualElement.toString());
+            }
+        }
+        return splittedJsonElements;
     }
 }

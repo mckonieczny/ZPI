@@ -59,7 +59,8 @@ public class DeckController extends AbstractController {
                 DeckDocument deck = new DeckDocument(parse(req.body()));
 
                 int dif = deck.getDifficulty();
-                if(notEmpty(deck.getOwnerId()) && notEmpty(deck.getName()) && dif > 0 && dif <= 5) {
+                if(notEmpty(deck.getName()) && dif > 0 && dif <= 5) {
+                    deck.setOwnerId(loggedUserId(req, resp));
                     deckRepository.save(deck);
                     resp.status(HTTP_OK);
                     response = deck.getId();

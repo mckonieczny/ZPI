@@ -18,28 +18,7 @@ public class FavoriteController extends AbstractController {
     private FavoriteRepository favoriteRepository = new FavoriteRepository();
 
     public void registerRestApi(){
-
         post("/api/favorite/add", (req, res) -> {
-            String deckId = req.queryParams("deckId");
-            if (notEmpty(deckId)) {
-                favoriteRepository.save(loggedUserId(req, res), deckId);
-                return statusOk();
-            } else {
-                return statusError();
-            }
-        });
-
-        post("/api/favorite/remove", (req, res) -> {
-            String deckId = req.queryParams("deckId");
-            if (notEmpty(deckId)) {
-                favoriteRepository.delete(loggedUserId(req, res), deckId);
-                return statusOk();
-            } else {
-                return statusError();
-            }
-        });
-
-        post("/api/favorite/add2", (req, res) -> {
             FavoriteDocument favorite = new FavoriteDocument(parse(req.body()));
             favorite.setUserId(loggedUserId(req, res));
             if (notEmpty(favorite.getDeckId())) {
@@ -52,7 +31,7 @@ public class FavoriteController extends AbstractController {
             }
         });
 
-        post("/api/favorite/remove2", (req, res) -> {
+        post("/api/favorite/remove", (req, res) -> {
             FavoriteDocument favorite = new FavoriteDocument(parse(req.body()));
             if (notEmpty(favorite.getDeckId())) {
                 favoriteRepository.delete(favorite.getId(), loggedUserId(req, res));
