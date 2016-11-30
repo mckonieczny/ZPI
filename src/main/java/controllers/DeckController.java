@@ -79,7 +79,7 @@ public class DeckController extends AbstractController {
             return response;
         });
 
-        delete("/api/decks/:id/delete", (req, resp) -> {
+        post("/api/decks/:id/delete", (req, resp) -> {
             String result = "";
             String id = req.params("id");
             if(notEmpty(id)){

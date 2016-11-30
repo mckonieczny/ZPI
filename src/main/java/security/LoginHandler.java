@@ -158,6 +158,8 @@ public class LoginHandler {
             profile.setClientName(FACEBOOK_AUTH);
             manager.save(true, profile, false);
 
+            setCookieTimeout(req, res);
+
             return responseSuccess(profile);
         }
         else {
@@ -166,14 +168,18 @@ public class LoginHandler {
     }
 
     private String userInfo(Request req, Response res) {
+        setCookieTimeout(req, res);
+        return getProfile(req, res)
+                .map(this::responseSuccess)
+                .orElse(responseError());
+    }
+
+    private void setCookieTimeout(Request req, Response res) {
         //TODO ciasteczko zalogowanej sesji ustawiane na godzinę
         String sessionId = req.cookie("JSESSIONID");
         if (notEmpty(sessionId)) {
             res.cookie("/", "JSESSIONID", sessionId, 60*60, false);
         }
-        return getProfile(req, res)
-                .map(this::responseSuccess)
-                .orElse(responseError());
     }
 
     private String responseSuccess(CommonProfile profile) {
@@ -247,12 +253,17 @@ public class LoginHandler {
 
     public static String loggedUserId(Request req, Response res) {
 
-        UserRepository userRepository = new UserRepository(); // TODO repository jako singleton
-
-        return getProfile(req, res)
-                .map(CommonProfile::getId)
-                .map(userRepository::findByName)
-                .map(UserDocument::getId)// TODO wsyzstkie dane dostepne z poziomu CommonProfile
-                .orElse("");
+        if (getProfile(req, res).isPresent()) {
+            CommonProfile profile = getProfile(req, res).get();
+            switch (profile.getClass().getSimpleName()) {
+                case "FacebookProfile":
+                    return profile.getId();
+                case "MongoProfile":
+                    UserRepository userRepository = new UserRepository(); // TODO repository jako singleton
+                    UserDocument user = userRepository.findByName(profile.getId());
+                    return user.getId();
+            }
+        }
+        return "";
     }
 }

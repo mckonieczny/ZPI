@@ -14,7 +14,6 @@ import spark.ModelAndView;
 import java.util.HashMap;
 import java.util.Map;
 
-import static database.mongo.MongoUtils.toJson;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static org.bson.Document.parse;
@@ -73,8 +72,6 @@ public class Samples {
             Map<String, Object> model = new HashMap<>();
             return new ModelAndView(model, "private.ftl");
         }, templateEngine());
-
-        get("/api/decks/:id", (req, res) -> toJson(new CardRepository().findByDeckId(req.params(":id"))));
 
         get("/register", (req, res) -> {
             Map<String, Object> model = new HashMap<>();
