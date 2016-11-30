@@ -3,13 +3,13 @@ package controllers;
 import database.document.CardDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
+
 import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
-import static server.SparkUtils.notEmpty;
-import static org.bson.Document.parse;
 import static java.net.HttpURLConnection.*;
-import static spark.Spark.delete;
+import static org.bson.Document.parse;
+import static server.SparkUtils.notEmpty;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
@@ -47,7 +47,7 @@ public class CardController extends AbstractController {
             return result;
         });
 
-        delete("/api/cards/:id/delete", (request, response) -> {
+        post("/api/cards/:id/delete", (request, response) -> {
             String cardId = request.params("id");
             String result = "";
             if(notEmpty(cardId)) {
