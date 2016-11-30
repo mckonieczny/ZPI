@@ -3,13 +3,16 @@ package controllers;
 import database.document.CardDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
 import static server.SparkUtils.notEmpty;
 import static org.bson.Document.parse;
 import static java.net.HttpURLConnection.*;
-import static spark.Spark.delete;
+import static server.SparkUtils.splitJsonArray;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
