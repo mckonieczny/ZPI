@@ -23,40 +23,47 @@ public class CardController extends AbstractController {
 
     private CardRepository repository;
 
-    public CardController(){
-        this.repository =  new CardRepository();
+    public CardController() {
+        this.repository = new CardRepository();
     }
 
     @Override
     public void registerRestApi() {
 
-        post("/api/cards/create", (request, response) ->{
+        post("/api/cards/create", (request, response) -> {
             String result = "";
             List<String> cardsStrings = splitJsonArray(request.body());
             List<CardDocument> cards = new ArrayList<CardDocument>();
-            for (String cardString: cardsStrings) {
+            for (String cardString : cardsStrings) {
                 CardDocument card = new CardDocument(parse(cardString));
-                if(notEmpty(card.getDeckId()) && notEmpty(card.getWord()) && notEmpty(card.getTranslation())) {
+                if (notEmpty(card.getDeckId()) && notEmpty(card.getWord()) && notEmpty(card.getTranslation())) {
                     cards.add(card);
                 }
             }
-            DeckRepository deckRepository = new DeckRepository();
-            try{
-                for(int i = 0; i < cards.size(); i++){
-                    CardDocument card = cards.get(i);
-                    try{
-                        deckRepository.increaseSize(card.getDeckId());
-                        this.repository.save(card);
+            if (cards.size() > 0) {
+                DeckRepository deckRepository = new DeckRepository();
+                try {
+                    List<CardDocument> cardsToRemove = this.repository.findByDeckId(cards.get(0).getDeckId());
+                    for (int i = 0; i < cardsToRemove.size(); i++) {
+                        CardDocument card = cardsToRemove.get(i);
+                        deckRepository.decreaseSize(card.getDeckId());
+                        this.repository.delete(card);
                     }
-                    catch (IllegalArgumentException ex){
-                        cards.remove(i);
+                    for (int i = 0; i < cards.size(); i++) {
+                        CardDocument card = cards.get(i);
+                        try {
+                            deckRepository.increaseSize(card.getDeckId());
+                            this.repository.save(card);
+                        } catch (IllegalArgumentException ex) {
+                            cards.remove(i);
+                        }
                     }
+                    response.status(HTTP_OK);
+                    result = toJson(cards);
+                } catch (Exception e) {
+                    response.status(HTTP_INTERNAL_ERROR);
+                    result = e.getMessage();
                 }
-                response.status(HTTP_OK);
-                result = toJson(cards);
-            }catch (Exception e){
-                response.status(HTTP_INTERNAL_ERROR);
-                result = e.getMessage();
             }
             return result;
         });
@@ -64,20 +71,19 @@ public class CardController extends AbstractController {
         post("/api/cards/:id/delete", (request, response) -> {
             String cardId = request.params("id");
             String result = "";
-            if(notEmpty(cardId)) {
-                try{
+            if (notEmpty(cardId)) {
+                try {
                     Map<String, String> card = repository.findById(cardId);
                     String deckId = card.get(CardDocument.M_DECK_ID);
                     DeckRepository deckRepository = new DeckRepository();
                     deckRepository.decreaseSize(deckId);
                     repository.deleteById(cardId);
                     response.status(HTTP_OK);
-                }
-                catch(Exception e) {
+                } catch (Exception e) {
                     response.status(HTTP_NOT_FOUND);
                     result = e.getMessage();
                 }
-            }else {
+            } else {
                 result = "CardId can not be null or empty";
                 response.status(HTTP_BAD_REQUEST);
             }
