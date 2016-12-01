@@ -34,7 +34,7 @@ public class FavoriteController extends AbstractController {
         post("/api/favorite/remove", (req, res) -> {
             FavoriteDocument favorite = new FavoriteDocument(parse(req.body()));
             if (notEmpty(favorite.getDeckId())) {
-                favoriteRepository.delete(favorite.getId(), loggedUserId(req, res));
+                favoriteRepository.delete(loggedUserId(req, res), favorite.getDeckId());
                 res.status(HTTP_OK);
                 return "";
             } else {
