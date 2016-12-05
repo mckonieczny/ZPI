@@ -36,6 +36,8 @@ public class Main {
 
         new FavoriteController().registerRestApi();
 
+        new PathController().registerRestApi();
+
         Samples.create(loginHandler);
 
         SparkUtils.enableCORS();
