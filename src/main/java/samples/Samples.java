@@ -11,7 +11,9 @@ import database.repository.UserRepository;
 import security.LoginHandler;
 import spark.ModelAndView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -126,30 +128,102 @@ public class Samples {
         CardRepository cardDB = new CardRepository();
         FavoriteRepository favDB = new FavoriteRepository();
 
-        UserDocument user1 = new UserDocument("admin", createHash("admin"));
-        UserDocument user2 = new UserDocument("pwd", createHash("pwd"));
+        List<UserDocument> users = new ArrayList<UserDocument>();
+        /* 0 */ users.add(new UserDocument("admin", createHash("admin")));
+        /* 1 */ users.add(new UserDocument("pwd", createHash("pwd")));
+        /* 2 */ users.add(new UserDocument("filip", createHash("123")));
+        /* 3 */ users.add(new UserDocument("markos", createHash("qwerty")));
+        /* 4 */ users.add(new UserDocument("testownik", createHash("test")));
+        users.stream().forEach(userDB::save);
 
-        userDB.save(user1);
-        userDB.save(user2);
+        List<DeckDocument> decks = new ArrayList<DeckDocument>();
+        /* 0 */ decks.add(new DeckDocument(users.get(1).getId(), "Sporty", "Proste słówka, dyscypliny sportowe", 1));
+        /* 1 */ decks.add(new DeckDocument(users.get(1).getId(), "Części do Ursusa", "Słownictwo fachowe, dla mechaników i serwisantów traktorów w Anglii", 5));
+        /* 2 */ decks.add(new DeckDocument(users.get(1).getId(), "Jedzenie", "Posiłki, jedzeinie i napoje", 1));
+        /* 3 */ decks.add(new DeckDocument(users.get(1).getId(), "Szkoła", "Słownictwo związane z przedmiotawmi szkolnymi", 1));
+        /* 4 */ decks.add(new DeckDocument(users.get(1).getId(), "Kolory", "Nazwy kolorów", 1));
+        /* 5 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 1", "Proste słówka, owoce i warzywa", 1));
+        /* 6 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 2", "Proste słówka, owoce i warzywa", 2));
+        /* 7 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 3", "Proste słówka, owoce i warzywa", 3));
+        /* 8 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 4", "Proste słówka, owoce i warzywa", 4));
+        /* 9 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 5", "Proste słówka, owoce i warzywa", 5));
+        /* 10 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 1", "Proste słówka, ubranie", 1));
+        /* 11 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 2", "Proste słówka, ubranie", 2));
+        /* 12 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 3", "Proste słówka, ubranie", 3));
+        /* 13 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 4", "Proste słówka, ubranie", 4));
+        /* 14 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 5", "Proste słówka, ubranie", 5));
+        /* 15 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 1", "Proste słówka, części ciała", 1));
+        /* 16 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 2", "Proste słówka, części ciała", 2));
+        /* 17 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 3", "Proste słówka, części ciała", 3));
+        /* 18 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 4", "Proste słówka, części ciała", 4));
+        /* 19 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 5", "Proste słówka, części ciała", 5));
+        /* 20 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 1", "Proste słówka, sprzęty domowe", 1));
+        /* 21 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 2", "Proste słówka, sprzęty domowe", 2));
+        /* 22 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 3", "Proste słówka, sprzęty domowe", 3));
+        /* 23 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 4", "Proste słówka, sprzęty domowe", 4));
+        /* 24 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 5", "Proste słówka, sprzęty domowe", 5));
+        decks.stream().forEach(deckDB::save);
 
-        DeckDocument deck1 = new DeckDocument(user1.getId(), "Owoce i warzywa", "Proste słówka, owoce i warzywa", 1);
-        DeckDocument deck2 = new DeckDocument(user1.getId(), "Sporty", "Proste słówka, dyscypliny sportowe", 1);
-        DeckDocument deck3 = new DeckDocument(user2.getId(), "Części do Ursusa", "Słownictwo fachowe, dla mechaników i serwisantów traktorów w Anglii", 5);
+        /* 0 */
+        cardDB.save(new CardDocument(decks.get(0).getId(),"aerobik", "aerobics"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"łucznictwo", "archery"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"atletyka", "athletics"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"badminton", "badminton"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"piłka", "ball"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"koszykówka", "basketball"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"bilard", "billiard"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"boks", "boxing"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"skoki na elastycznej linie", "bungee jumping"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"kajakarstwo", "canoeing"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"krykiet", "cricket"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"jazda na rowerze", "cycling"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"gra w strzałki", "darts"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"nurkowanie", "diving"));
+        cardDB.save(new CardDocument(decks.get(0).getId(),"piłka nożna", "football"));
 
-        deckDB.save(deck1);
-        deckDB.save(deck2);
-        deckDB.save(deck3);
+        /* 5 */
+        cardDB.save(new CardDocument(decks.get(5).getId(),"jabłko", "apple"));
+        cardDB.save(new CardDocument(decks.get(5).getId(),"morela", "apricot"));
+        cardDB.save(new CardDocument(decks.get(5).getId(),"jagoda", "berry"));
+        cardDB.save(new CardDocument(decks.get(5).getId(),"wiśnia", "cherry"));
+        cardDB.save(new CardDocument(decks.get(5).getId(),"winogrono", "grape"));
 
-        cardDB.save(new CardDocument(deck1.getId(),"alpha", "ahpla"));
-        cardDB.save(new CardDocument(deck2.getId(),"beta", "ateb"));
-        cardDB.save(new CardDocument(deck2.getId(),"gamma", "ammag"));
-        cardDB.save(new CardDocument(deck3.getId(),"epsilon", "nolispe"));
-        cardDB.save(new CardDocument(deck3.getId(),"lambda", "adbmal"));
-        cardDB.save(new CardDocument(deck3.getId(),"omega", "agemo"));
+        /* 6 */
+        cardDB.save(new CardDocument(decks.get(6).getId(),"jabłko", "apple"));
+        cardDB.save(new CardDocument(decks.get(6).getId(),"morela", "apricot"));
+        cardDB.save(new CardDocument(decks.get(6).getId(),"jagoda", "berry"));
+        cardDB.save(new CardDocument(decks.get(6).getId(),"wiśnia", "cherry"));
+        cardDB.save(new CardDocument(decks.get(6).getId(),"winogrono", "grape"));
 
-        favDB.save(user1.getId(), deck1.getId());
-        favDB.save(user1.getId(), deck3.getId());
-        favDB.save(user2.getId(), deck1.getId());
-        favDB.save(user2.getId(), deck2.getId());
+        /* 7 */
+        cardDB.save(new CardDocument(decks.get(7).getId(),"jabłko", "apple"));
+        cardDB.save(new CardDocument(decks.get(7).getId(),"morela", "apricot"));
+        cardDB.save(new CardDocument(decks.get(7).getId(),"jagoda", "berry"));
+        cardDB.save(new CardDocument(decks.get(7).getId(),"wiśnia", "cherry"));
+        cardDB.save(new CardDocument(decks.get(7).getId(),"winogrono", "grape"));
+
+        /* 8 */
+        cardDB.save(new CardDocument(decks.get(8).getId(),"jabłko", "apple"));
+        cardDB.save(new CardDocument(decks.get(8).getId(),"morela", "apricot"));
+        cardDB.save(new CardDocument(decks.get(8).getId(),"jagoda", "berry"));
+        cardDB.save(new CardDocument(decks.get(8).getId(),"wiśnia", "cherry"));
+        cardDB.save(new CardDocument(decks.get(8).getId(),"winogrono", "grape"));
+
+        /* 9 */
+        cardDB.save(new CardDocument(decks.get(9).getId(),"jabłko", "apple"));
+        cardDB.save(new CardDocument(decks.get(9).getId(),"morela", "apricot"));
+        cardDB.save(new CardDocument(decks.get(9).getId(),"jagoda", "berry"));
+        cardDB.save(new CardDocument(decks.get(9).getId(),"wiśnia", "cherry"));
+        cardDB.save(new CardDocument(decks.get(9).getId(),"winogrono", "grape"));
+
+        favDB.save(users.get(0).getId(), decks.get(0).getId());
+        favDB.save(users.get(0).getId(), decks.get(1).getId());
+        favDB.save(users.get(0).getId(), decks.get(5).getId());
+        favDB.save(users.get(0).getId(), decks.get(6).getId());
+        favDB.save(users.get(1).getId(), decks.get(0).getId());
+        favDB.save(users.get(1).getId(), decks.get(3).getId());
+        favDB.save(users.get(1).getId(), decks.get(6).getId());
+        favDB.save(users.get(1).getId(), decks.get(7).getId());
+
     }
 }
