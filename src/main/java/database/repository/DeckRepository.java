@@ -16,6 +16,7 @@ import static com.mongodb.client.model.Filters.eq;
 public class DeckRepository extends MongoRepository<DeckDocument> {
 
     public final static String C_DECKS = "decks";
+    public final static int PAGE_OFFSET = 10;
 
 
     public DeckRepository() {
@@ -27,6 +28,19 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
         List<DeckDocument> decks = new ArrayList<>();
         getCollection()
                 .find()
+                .map(card -> new DeckDocument((Document) card))
+                .into(decks);
+
+        return decks;
+    }
+
+    public List<DeckDocument> findAll(int page) {
+
+        List<DeckDocument> decks = new ArrayList<>();
+        getCollection()
+                .find()
+                .skip(PAGE_OFFSET * page)
+                .limit(PAGE_OFFSET)
                 .map(card -> new DeckDocument((Document) card))
                 .into(decks);
 

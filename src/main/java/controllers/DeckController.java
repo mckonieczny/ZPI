@@ -6,15 +6,18 @@ import database.document.FavoriteDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
+
 import java.util.List;
 
-import static org.bson.Document.parse;
 import static database.mongo.MongoUtils.toJson;
+import static java.lang.Integer.parseInt;
 import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
+import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
 import static server.SparkUtils.notEmpty;
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.post;
 
 
 /**
@@ -32,7 +35,19 @@ public class DeckController extends AbstractController {
     public void registerRestApi(){
 
         get("/api/decks", (req, res) -> {
-            List<DeckDocument> decks = deckRepository.findAll();
+
+            int page = -1;
+            try {
+                page = parseInt(req.queryParams("page"));
+            } catch (NumberFormatException e) {}
+
+            List<DeckDocument> decks;
+            if (page >= 0) {
+                decks = deckRepository.findAll(page);
+            } else {
+                decks = deckRepository.findAll();
+            }
+
             setFavorites(decks, loggedUserId(req, res));
             return toJson(decks);
         });
