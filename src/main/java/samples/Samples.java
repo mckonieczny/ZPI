@@ -2,12 +2,10 @@ package samples;
 
 import database.document.CardDocument;
 import database.document.DeckDocument;
+import database.document.LanguageDocument;
 import database.document.UserDocument;
 import database.mongo.MongoUtils;
-import database.repository.CardRepository;
-import database.repository.DeckRepository;
-import database.repository.FavoriteRepository;
-import database.repository.UserRepository;
+import database.repository.*;
 import security.LoginHandler;
 import spark.ModelAndView;
 
@@ -127,6 +125,7 @@ public class Samples {
         DeckRepository deckDB = new DeckRepository();
         CardRepository cardDB = new CardRepository();
         FavoriteRepository favDB = new FavoriteRepository();
+        LanguageRepository langDB = new LanguageRepository();
 
         List<UserDocument> users = new ArrayList<UserDocument>();
         /* 0 */ users.add(new UserDocument("admin", createHash("admin")));
@@ -136,32 +135,40 @@ public class Samples {
         /* 4 */ users.add(new UserDocument("testownik", createHash("test")));
         users.stream().forEach(userDB::save);
 
+        List<LanguageDocument> languages = new ArrayList<LanguageDocument>();
+        /* 0 */ languages.add(new LanguageDocument("Angielski"));
+        /* 1 */ languages.add(new LanguageDocument("Niemiecki"));
+        /* 2 */ languages.add(new LanguageDocument("Francuski"));
+        /* 3 */ languages.add(new LanguageDocument("Hiszpański"));
+        /* 4 */ languages.add(new LanguageDocument("Włoski"));
+        languages.stream().forEach(langDB::save);
+
         List<DeckDocument> decks = new ArrayList<DeckDocument>();
-        /* 0 */ decks.add(new DeckDocument(users.get(1).getId(), "Sporty", "Proste słówka, dyscypliny sportowe", 1));
-        /* 1 */ decks.add(new DeckDocument(users.get(1).getId(), "Części do Ursusa", "Słownictwo fachowe, dla mechaników i serwisantów traktorów w Anglii", 5));
-        /* 2 */ decks.add(new DeckDocument(users.get(1).getId(), "Jedzenie", "Posiłki, jedzeinie i napoje", 1));
-        /* 3 */ decks.add(new DeckDocument(users.get(1).getId(), "Szkoła", "Słownictwo związane z przedmiotawmi szkolnymi", 1));
-        /* 4 */ decks.add(new DeckDocument(users.get(1).getId(), "Kolory", "Nazwy kolorów", 1));
-        /* 5 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 1", "Proste słówka, owoce i warzywa", 1));
-        /* 6 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 2", "Proste słówka, owoce i warzywa", 2));
-        /* 7 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 3", "Proste słówka, owoce i warzywa", 3));
-        /* 8 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 4", "Proste słówka, owoce i warzywa", 4));
-        /* 9 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 5", "Proste słówka, owoce i warzywa", 5));
-        /* 10 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 1", "Proste słówka, ubranie", 1));
-        /* 11 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 2", "Proste słówka, ubranie", 2));
-        /* 12 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 3", "Proste słówka, ubranie", 3));
-        /* 13 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 4", "Proste słówka, ubranie", 4));
-        /* 14 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 5", "Proste słówka, ubranie", 5));
-        /* 15 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 1", "Proste słówka, części ciała", 1));
-        /* 16 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 2", "Proste słówka, części ciała", 2));
-        /* 17 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 3", "Proste słówka, części ciała", 3));
-        /* 18 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 4", "Proste słówka, części ciała", 4));
-        /* 19 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 5", "Proste słówka, części ciała", 5));
-        /* 20 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 1", "Proste słówka, sprzęty domowe", 1));
-        /* 21 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 2", "Proste słówka, sprzęty domowe", 2));
-        /* 22 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 3", "Proste słówka, sprzęty domowe", 3));
-        /* 23 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 4", "Proste słówka, sprzęty domowe", 4));
-        /* 24 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 5", "Proste słówka, sprzęty domowe", 5));
+        /* 0 */ decks.add(new DeckDocument(users.get(1).getId(), "Sporty", "Proste słówka, dyscypliny sportowe", 1, languages.get(0).getId()));
+        /* 1 */ decks.add(new DeckDocument(users.get(1).getId(), "Części do Ursusa", "Słownictwo fachowe, dla mechaników i serwisantów traktorów w Anglii", 5, languages.get(0).getId()));
+        /* 2 */ decks.add(new DeckDocument(users.get(1).getId(), "Jedzenie", "Posiłki, jedzeinie i napoje", 1, languages.get(0).getId()));
+        /* 3 */ decks.add(new DeckDocument(users.get(1).getId(), "Szkoła", "Słownictwo związane z przedmiotawmi szkolnymi", 1, languages.get(0).getId()));
+        /* 4 */ decks.add(new DeckDocument(users.get(1).getId(), "Kolory", "Nazwy kolorów", 1, languages.get(0).getId()));
+        /* 5 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 1", "Proste słówka, owoce i warzywa", 1, languages.get(0).getId()));
+        /* 6 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 2", "Proste słówka, owoce i warzywa", 2, languages.get(0).getId()));
+        /* 7 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 3", "Proste słówka, owoce i warzywa", 3, languages.get(0).getId()));
+        /* 8 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 4", "Proste słówka, owoce i warzywa", 4, languages.get(0).getId()));
+        /* 9 */ decks.add(new DeckDocument(users.get(0).getId(), "Owoce i warzywa - część 5", "Proste słówka, owoce i warzywa", 5, languages.get(0).getId()));
+        /* 10 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 1", "Proste słówka, ubranie", 1, languages.get(0).getId()));
+        /* 11 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 2", "Proste słówka, ubranie", 2, languages.get(0).getId()));
+        /* 12 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 3", "Proste słówka, ubranie", 3, languages.get(0).getId()));
+        /* 13 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 4", "Proste słówka, ubranie", 4, languages.get(0).getId()));
+        /* 14 */ decks.add(new DeckDocument(users.get(0).getId(), "Ubranie - część 5", "Proste słówka, ubranie", 5, languages.get(0).getId()));
+        /* 15 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 1", "Proste słówka, części ciała", 1, languages.get(1).getId()));
+        /* 16 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 2", "Proste słówka, części ciała", 2, languages.get(1).getId()));
+        /* 17 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 3", "Proste słówka, części ciała", 3, languages.get(1).getId()));
+        /* 18 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 4", "Proste słówka, części ciała", 4, languages.get(1).getId()));
+        /* 19 */ decks.add(new DeckDocument(users.get(0).getId(), "Części ciała - część 5", "Proste słówka, części ciała", 5, languages.get(1).getId()));
+        /* 20 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 1", "Proste słówka, sprzęty domowe", 1, languages.get(2).getId()));
+        /* 21 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 2", "Proste słówka, sprzęty domowe", 2, languages.get(2).getId()));
+        /* 22 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 3", "Proste słówka, sprzęty domowe", 3, languages.get(2).getId()));
+        /* 23 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 4", "Proste słówka, sprzęty domowe", 4, languages.get(2).getId()));
+        /* 24 */ decks.add(new DeckDocument(users.get(0).getId(), "Sprzęty domowe - część 5", "Proste słówka, sprzęty domowe", 5, languages.get(2).getId()));
         decks.stream().forEach(deckDB::save);
 
         /* 0 */

@@ -15,21 +15,23 @@ public class DeckDocument extends MongoDocument {
     public final static String M_DIFFICULTY = "difficulty";
     public final static String M_SIZE = "size";
     public final static String M_FAVORITE = "favorite";
+    public final static String M_LANGUAGE = "language";
 
 
     public DeckDocument(Document document) {
         super(document);
     }
 
-    public DeckDocument(String ownerId, String name, int difficulty) {
-        this(ownerId, name, "", difficulty);
+    public DeckDocument(String ownerId, String name, String description, int difficulty) {
+        this(ownerId, name, description, difficulty, "");
     }
 
-    public DeckDocument(String ownerId, String name, String description, int difficulty) {
+    public DeckDocument(String ownerId, String name, String description, int difficulty, String language) {
         setOwnerId(ownerId);
         setName(name);
         setDescription(description);
         setDifficulty(difficulty);
+        setLanguage(language);
     }
 
     public String getOwnerId() {
@@ -78,5 +80,13 @@ public class DeckDocument extends MongoDocument {
 
     public void setFavorite(boolean favorite) {
         getDocument().put(M_FAVORITE, favorite);
+    }
+
+    public String getLanguage() {
+        return getDocument().getString(M_LANGUAGE);
+    }
+
+    public void setLanguage(String description) {
+        getDocument().put(M_LANGUAGE, description);
     }
 }

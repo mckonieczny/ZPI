@@ -28,14 +28,10 @@ public class Main {
 
         FrontClientController.create();
 
-        AbstractController controller = new DeckController();
-        controller.registerRestApi();
-
-        controller = new CardController();
-        controller.registerRestApi();
-
+        new DeckController().registerRestApi();
+        new CardController().registerRestApi();
         new FavoriteController().registerRestApi();
-
+        new LanguageController().registerRestApi();
         new PathController().registerRestApi();
 
         Samples.create(loginHandler);

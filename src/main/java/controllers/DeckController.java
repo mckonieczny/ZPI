@@ -3,16 +3,20 @@ package controllers;
 import database.document.CardDocument;
 import database.document.DeckDocument;
 import database.document.FavoriteDocument;
+import database.document.LanguageDocument;
 import database.repository.CardRepository;
 import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
+import database.repository.LanguageRepository;
 
 import java.util.List;
+import java.util.Map;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.lang.Integer.parseInt;
 import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
 import static server.SparkUtils.notEmpty;
@@ -27,6 +31,7 @@ public class DeckController extends AbstractController {
 
     private DeckRepository deckRepository;
     private FavoriteRepository favoriteRepository = new FavoriteRepository();
+    private LanguageRepository languageRepository = new LanguageRepository();
 
     public DeckController(){
         this.deckRepository = new DeckRepository();
@@ -49,12 +54,14 @@ public class DeckController extends AbstractController {
             }
 
             setFavorites(decks, loggedUserId(req, res));
+            setLanguage(decks);
             return toJson(decks);
         });
 
         get("/api/favorite/decks", (req, res) -> {
             List<DeckDocument> decks = deckRepository.findAll();
             setFavorites(decks, loggedUserId(req, res));
+            setLanguage(decks);
             decks = decks.stream()
                     .filter(DeckDocument::isFavorite)
                     .collect(toList());
@@ -65,6 +72,7 @@ public class DeckController extends AbstractController {
         get("/api/user/decks", (req, res) -> {
             List<DeckDocument> decks =  deckRepository.findByOwnerId(loggedUserId(req, res));
             setFavorites(decks, loggedUserId(req, res));
+            setLanguage(decks);
             return toJson(decks);
         });
 
@@ -134,6 +142,21 @@ public class DeckController extends AbstractController {
 
         for(DeckDocument deck : decks) {
             deck.setFavorite(favorites.contains(deck.getId()));
+        }
+        return decks;
+    }
+
+    private List<DeckDocument> setLanguage(List<DeckDocument> decks) {
+
+        Map<String, String> languages = languageRepository.findAll()
+                .stream()
+                .collect(toMap(LanguageDocument::getId, LanguageDocument::getLanguage));
+
+        for (DeckDocument deck : decks) {
+            if (languages.containsKey(deck.getLanguage())) {
+                String language = languages.get(deck.getLanguage());
+                deck.setLanguage(language);
+            }
         }
         return decks;
     }
