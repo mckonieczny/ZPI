@@ -1,6 +1,7 @@
 package database.document;
 
 import database.mongo.MongoDocument;
+import org.bson.Document;
 
 /**
  * Created by Andrzej on 2016-12-14.
@@ -12,6 +13,10 @@ public class MarkDocument extends MongoDocument {
     public final static String M_OWNER_ID = "ownerId";
 
     public final static String M_MARK = "mark";
+
+    public MarkDocument(Document document){
+        super(document);
+    }
 
     public MarkDocument(String deckId, String ownerId, int mark){
         setDeckId(deckId);
