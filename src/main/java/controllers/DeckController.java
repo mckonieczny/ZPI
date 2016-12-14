@@ -40,13 +40,21 @@ public class DeckController extends AbstractController {
         get("/api/decks", (req, res) -> {
 
             int page = -1;
+            int limit = -1;
             try {
                 page = parseInt(req.queryParams("page"));
+            } catch (NumberFormatException e) {}
+            try {
+                limit = parseInt(req.queryParams("limit"));
             } catch (NumberFormatException e) {}
 
             List<DeckDocument> decks;
             if (page >= 0) {
-                decks = deckRepository.findAll(page);
+                if (limit >= 0) {
+                    decks = deckRepository.findAll(page, limit);
+                } else {
+                    decks = deckRepository.findAll(page);
+                }
             } else {
                 decks = deckRepository.findAll();
             }
