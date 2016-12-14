@@ -36,11 +36,16 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
 
     public List<DeckDocument> findAll(int page) {
 
+        return findAll(page, PAGE_OFFSET);
+    }
+
+    public List<DeckDocument> findAll(int page, int offset) {
+
         List<DeckDocument> decks = new ArrayList<>();
         getCollection()
                 .find()
-                .skip(PAGE_OFFSET * page)
-                .limit(PAGE_OFFSET)
+                .skip(offset * page)
+                .limit(offset)
                 .map(card -> new DeckDocument((Document) card))
                 .into(decks);
 
