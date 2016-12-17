@@ -1,13 +1,8 @@
 package controllers;
 
-import database.document.CardDocument;
-import database.document.DeckDocument;
-import database.document.FavoriteDocument;
-import database.document.LanguageDocument;
-import database.repository.CardRepository;
-import database.repository.DeckRepository;
-import database.repository.FavoriteRepository;
-import database.repository.LanguageRepository;
+import database.document.*;
+import database.repository.*;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +25,15 @@ import static spark.Spark.post;
  */
 public class DeckController extends AbstractController {
 
+    private MarkRepositpry markRepository;
     private DeckRepository deckRepository;
     private FavoriteRepository favoriteRepository = new FavoriteRepository();
     private LanguageRepository languageRepository = new LanguageRepository();
 
     public DeckController(){
+
         this.deckRepository = new DeckRepository();
+        this.markRepository = new MarkRepositpry();
     }
 
     public void registerRestApi(){
@@ -152,7 +150,47 @@ public class DeckController extends AbstractController {
             return result;
         });
 
+        post("/api/decks/:id/mark", (request, response) -> {
+            String result = "";
+            try{
+                MarkDocument mark = new MarkDocument(parse(request.body()));
+                if(mark.getMark() >= 1 && mark.getMark() <= 5){
+                    mark.setDeckId(request.params("id"));
+                    mark.setOwnerId(loggedUserId(request, response));
+                    if(markRepository.isExistingMark(mark.getDeckID(), mark.getOwerId())){
+                        markRepository.updateMark(mark.getDeckID(), mark.getOwerId(), mark.getMark());
+                        result = mark.toJson();
+                    }else{
+                        markRepository.save(mark);
+                        result = mark.toJson();
+                    }
+                    response.status(HTTP_OK);
+                }else {
+                    response.status(HTTP_BAD_REQUEST);
+                    result = "Mark must fit in range [1, 5]!";
+                }
+
+            }catch (Exception e){
+                result = e.getMessage();
+                response.status(HTTP_INTERNAL_ERROR);
+            }
+
+            return result;
+        });
+
+        get("/api/decks/:id/mark", (request, response) -> {
+            List<MarkDocument> marks = markRepository.findByDeckId(request.params("id"));
+            int mark = 0;
+            for(int i = 0; i< marks.size(); i++) {
+                mark += marks.get(i).getMark();
+            }
+            mark = marks.size()>0? mark/marks.size():0;
+            return new Document("mark", mark).toJson();
+        });
+
+        get("/api/marks", (request, response) -> toJson(markRepository.findAll()));
     }
+
 
     private List<DeckDocument> setFavorites(List<DeckDocument> decks, String userId) {
         List<String> favorites = favoriteRepository.findByUserId(userId)
