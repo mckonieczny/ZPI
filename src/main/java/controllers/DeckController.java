@@ -9,6 +9,7 @@ import database.repository.DeckRepository;
 import database.repository.FavoriteRepository;
 import database.repository.LanguageRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ public class DeckController extends AbstractController {
 
         get("/api/decks", (req, res) -> {
 
+            String keyword = req.queryParams("keyword");
             int page = -1;
             int limit = -1;
             try {
@@ -50,15 +52,25 @@ public class DeckController extends AbstractController {
                 limit = parseInt(req.queryParams("limit"));
             } catch (NumberFormatException e) {}
 
-            List<DeckDocument> decks;
-            if (page >= 0) {
-                if (limit >= 0) {
-                    decks = deckRepository.findAll(page, limit);
-                } else {
-                    decks = deckRepository.findAll(page);
-                }
-            } else {
+            List<DeckDocument> decks = new ArrayList<DeckDocument>();
+
+            if (!notEmpty(keyword) && page >= 0 && limit >= 0) {
+                decks = deckRepository.findAll(page, limit);
+            }
+            if (!notEmpty(keyword) && page >= 0 && limit < 0) {
+                decks = deckRepository.findAll(page);
+            }
+            if (!notEmpty(keyword) && page < 0) {
                 decks = deckRepository.findAll();
+            }
+            if (notEmpty(keyword) && page >= 0 && limit >= 0) {
+                decks = deckRepository.search(keyword, page, limit);
+            }
+            if (notEmpty(keyword) && page >= 0 && limit < 0) {
+                decks = deckRepository.search(keyword, page);
+            }
+            if (notEmpty(keyword) && page < 0) {
+                decks = deckRepository.search(keyword);
             }
 
             setFavorites(decks, loggedUserId(req, res));

@@ -2,13 +2,19 @@ package database.repository;
 
 import com.mongodb.BasicDBObject;
 import database.document.DeckDocument;
+import database.document.UserDocument;
 import database.mongo.MongoRepository;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
+import static database.document.DeckDocument.*;
+import static java.util.regex.Pattern.CASE_INSENSITIVE;
+import static java.util.regex.Pattern.compile;
 
 /**
  * Created by DjKonik on 2016-10-08.
@@ -17,6 +23,8 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
 
     public final static String C_DECKS = "decks";
     public final static int PAGE_OFFSET = 10;
+
+    private UserRepository userRepository = new UserRepository();
 
 
     public DeckRepository() {
@@ -50,6 +58,58 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
                 .into(decks);
 
         return decks;
+    }
+
+    public List<DeckDocument> search(String keyword, int page) {
+
+        return search(keyword, page, PAGE_OFFSET);
+    }
+
+    public List<DeckDocument> search(String keyword, int page, int offset) {
+
+        List<DeckDocument> decks = new ArrayList<>();
+        getCollection()
+                .find(searchCommand(keyword))
+                .skip(offset * page)
+                .limit(offset)
+                .map(card -> new DeckDocument((Document) card))
+                .into(decks);
+
+        return decks;
+    }
+
+    public List<DeckDocument> search(String keyword) {
+
+        List<DeckDocument> decks = new ArrayList<>();
+        getCollection()
+                .find(searchCommand(keyword))
+                .map(card -> new DeckDocument((Document) card))
+                .into(decks);
+
+        return decks;
+    }
+
+    private Bson searchCommand(String keyword) {
+
+        List<Bson> searchCommands = new ArrayList<Bson>();
+
+        for (UserDocument user : userRepository.search(keyword)) {
+            searchCommands.add(new BasicDBObject(M_OWNER_ID, compile(user.getId(), CASE_INSENSITIVE)));
+        }
+
+        List<Bson> subNameSearch = new ArrayList<Bson>();
+        for (String word : keyword.split(" ")) {
+            subNameSearch.add(new BasicDBObject(M_NAME, compile(word, CASE_INSENSITIVE)));
+        }
+        searchCommands.add(and(subNameSearch));
+
+        List<Bson> subDescSearch = new ArrayList<Bson>();
+        for (String word : keyword.split(" ")) {
+            subDescSearch.add(new BasicDBObject(M_DESCRIPTION, compile(word, CASE_INSENSITIVE)));
+        }
+        searchCommands.add(and(subDescSearch));
+
+        return or(searchCommands);
     }
 
     public List<DeckDocument> findByOwnerId(String ownerId) {
