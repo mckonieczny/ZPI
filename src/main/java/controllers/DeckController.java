@@ -14,7 +14,6 @@ import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
-import static server.SparkUtils.empty;
 import static server.SparkUtils.notEmpty;
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -217,10 +216,7 @@ public class DeckController extends AbstractController {
                     .filter(language -> language.getId().equals(deck.getLanguage()))
                     .findFirst()
                     .ifPresent(language -> {
-                        deck.setLanguage(language.getLanguage());
-                        if (empty(deck.getImage())) {
-                            deck.setImage(language.getImage());
-                        }
+                        deck.setLanguage(language.getDocument());
                     });
         }
         return decks;

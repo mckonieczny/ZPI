@@ -92,6 +92,10 @@ public class DeckDocument extends MongoDocument {
         getDocument().put(M_LANGUAGE, language);
     }
 
+    public void setLanguage(Document language) {
+        getDocument().put(M_LANGUAGE, language);
+    }
+
     public String getImage() {
         return getDocument().getString(M_IMAGE);
     }
