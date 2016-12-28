@@ -18,6 +18,7 @@ public class DeckDocument extends MongoDocument {
     public final static String M_LANGUAGE = "language";
     public final static String M_IMAGE = "image";
     public final static String M_MARK = "mark";
+    public final static String M_VOTES = "votes";
 
 
     public DeckDocument(Document document) {
@@ -106,5 +107,9 @@ public class DeckDocument extends MongoDocument {
 
     public void setMark(double mark) {
         getDocument().put(M_MARK, mark);
+    }
+
+    public void setVotes(int votes) {
+        getDocument().put(M_VOTES, votes);
     }
 }

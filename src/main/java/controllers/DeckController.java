@@ -227,6 +227,7 @@ public class DeckController extends AbstractController {
         for (DeckDocument deck : decks) {
             //todo ustawianie ocen
             deck.setMark(new Random().nextDouble() * 5);
+            deck.setVotes(new Random().nextInt(200));
         }
 
         return decks;
