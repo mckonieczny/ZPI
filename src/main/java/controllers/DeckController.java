@@ -14,6 +14,7 @@ import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
+import static server.SparkUtils.empty;
 import static server.SparkUtils.notEmpty;
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -51,13 +52,13 @@ public class DeckController extends AbstractController {
 
             List<DeckDocument> decks = new ArrayList<DeckDocument>();
 
-            if (!notEmpty(keyword) && page >= 0 && limit >= 0) {
+            if (empty(keyword) && page >= 0 && limit >= 0) {
                 decks = deckRepository.findAll(page, limit);
             }
-            if (!notEmpty(keyword) && page >= 0 && limit < 0) {
+            if (empty(keyword) && page >= 0 && limit < 0) {
                 decks = deckRepository.findAll(page);
             }
-            if (!notEmpty(keyword) && page < 0) {
+            if (empty(keyword) && page < 0) {
                 decks = deckRepository.findAll();
             }
             if (notEmpty(keyword) && page >= 0 && limit >= 0) {
@@ -100,6 +101,11 @@ public class DeckController extends AbstractController {
             String response = "";
             try{
                 DeckDocument deck = new DeckDocument(parse(req.body()));
+
+                //TODO do usuniecia po dodaniu pola w formularzu na froncie
+                if (empty(deck.getLanguage())) {
+                    deck.setLanguage(new LanguageRepository().findAll().get(0).getId());
+                }
 
                 int dif = deck.getDifficulty();
                 if(notEmpty(deck.getName()) && dif > 0 && dif <= 5) {
