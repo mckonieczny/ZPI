@@ -6,15 +6,15 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.lang.Integer.parseInt;
 import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
+import static server.SparkUtils.empty;
 import static server.SparkUtils.notEmpty;
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -73,6 +73,7 @@ public class DeckController extends AbstractController {
 
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
+            setMark(decks);
             return toJson(decks);
         });
 
@@ -80,6 +81,7 @@ public class DeckController extends AbstractController {
             List<DeckDocument> decks = deckRepository.findAll();
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
+            setMark(decks);
             decks = decks.stream()
                     .filter(DeckDocument::isFavorite)
                     .collect(toList());
@@ -91,6 +93,7 @@ public class DeckController extends AbstractController {
             List<DeckDocument> decks =  deckRepository.findByOwnerId(loggedUserId(req, res));
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
+            setMark(decks);
             return toJson(decks);
         });
 
@@ -206,16 +209,30 @@ public class DeckController extends AbstractController {
 
     private List<DeckDocument> setLanguage(List<DeckDocument> decks) {
 
-        Map<String, String> languages = languageRepository.findAll()
-                .stream()
-                .collect(toMap(LanguageDocument::getId, LanguageDocument::getLanguage));
+        List<LanguageDocument> languages = languageRepository.findAll();
 
         for (DeckDocument deck : decks) {
-            if (languages.containsKey(deck.getLanguage())) {
-                String language = languages.get(deck.getLanguage());
-                deck.setLanguage(language);
-            }
+
+            languages.stream()
+                    .filter(language -> language.getId().equals(deck.getLanguage()))
+                    .findFirst()
+                    .ifPresent(language -> {
+                        deck.setLanguage(language.getLanguage());
+                        if (empty(deck.getImage())) {
+                            deck.setImage(language.getImage());
+                        }
+                    });
         }
+        return decks;
+    }
+
+    private List<DeckDocument> setMark(List<DeckDocument> decks) {
+
+        for (DeckDocument deck : decks) {
+            //todo ustawianie ocen
+            deck.setMark(new Random().nextDouble() * 5);
+        }
+
         return decks;
     }
 }

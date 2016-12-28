@@ -16,6 +16,8 @@ public class DeckDocument extends MongoDocument {
     public final static String M_SIZE = "size";
     public final static String M_FAVORITE = "favorite";
     public final static String M_LANGUAGE = "language";
+    public final static String M_IMAGE = "image";
+    public final static String M_MARK = "mark";
 
 
     public DeckDocument(Document document) {
@@ -86,7 +88,19 @@ public class DeckDocument extends MongoDocument {
         return getDocument().getString(M_LANGUAGE);
     }
 
-    public void setLanguage(String description) {
-        getDocument().put(M_LANGUAGE, description);
+    public void setLanguage(String language) {
+        getDocument().put(M_LANGUAGE, language);
+    }
+
+    public String getImage() {
+        return getDocument().getString(M_IMAGE);
+    }
+
+    public void setImage(String image) {
+        getDocument().put(M_IMAGE, image);
+    }
+
+    public void setMark(double mark) {
+        getDocument().put(M_MARK, mark);
     }
 }

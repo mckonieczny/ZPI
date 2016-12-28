@@ -50,11 +50,11 @@ public class MongoInit {
         users.stream().forEach(userDB::save);
 
         List<LanguageDocument> languages = new ArrayList<LanguageDocument>();
-        /* 0 */ languages.add(new LanguageDocument("Angielski"));
-        /* 1 */ languages.add(new LanguageDocument("Niemiecki"));
-        /* 2 */ languages.add(new LanguageDocument("Francuski"));
-        /* 3 */ languages.add(new LanguageDocument("Hiszpański"));
-        /* 4 */ languages.add(new LanguageDocument("Włoski"));
+        /* 0 */ languages.add(new LanguageDocument("Angielski", "1"));
+        /* 1 */ languages.add(new LanguageDocument("Niemiecki", "2"));
+        /* 2 */ languages.add(new LanguageDocument("Francuski", "3"));
+        /* 3 */ languages.add(new LanguageDocument("Hiszpański", "4"));
+        /* 4 */ languages.add(new LanguageDocument("Włoski", "5"));
         languages.stream().forEach(langDB::save);
 
         List<DeckDocument> decks = new ArrayList<DeckDocument>();

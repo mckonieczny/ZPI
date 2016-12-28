@@ -49,6 +49,12 @@ public class SparkUtils {
         return str != null && !str.equals("");
     }
 
+    public static boolean empty(String str) {
+
+        return str == null || str.equals("");
+    }
+
+
     private static String renderDeployedContent(String htmlFile) {
         try {
             File file = new File(DEPLOYED_RESOURCES_PATH + htmlFile);
