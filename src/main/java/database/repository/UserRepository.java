@@ -32,6 +32,17 @@ public class UserRepository extends MongoRepository<UserDocument> {
         return new UserDocument((Document) getCollection().find(eq(M_USERNAME, name)).first());
     }
 
+    public List<UserDocument> findAll() {
+
+        List<UserDocument> users = new ArrayList<>();
+        getCollection()
+                .find()
+                .map(user -> new UserDocument((Document) user))
+                .into(users);
+
+        return users;
+    }
+
     public List<UserDocument> search(String keyword) {
 
         List<UserDocument> users = new ArrayList<>();

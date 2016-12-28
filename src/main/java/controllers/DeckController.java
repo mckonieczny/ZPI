@@ -4,14 +4,13 @@ import database.document.*;
 import database.repository.*;
 import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.lang.Integer.parseInt;
 import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
 import static server.SparkUtils.empty;
@@ -28,6 +27,7 @@ public class DeckController extends AbstractController {
     private MarkRepositpry markRepository;
     private DeckRepository deckRepository;
     private FavoriteRepository favoriteRepository = new FavoriteRepository();
+    private UserRepository userRepository = new UserRepository();
     private LanguageRepository languageRepository = new LanguageRepository();
 
     public DeckController(){
@@ -71,6 +71,7 @@ public class DeckController extends AbstractController {
                 decks = deckRepository.search(keyword);
             }
 
+            setOwner(decks);
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
@@ -79,6 +80,7 @@ public class DeckController extends AbstractController {
 
         get("/api/favorite/decks", (req, res) -> {
             List<DeckDocument> decks = deckRepository.findAll();
+            setOwner(decks);
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
@@ -91,6 +93,7 @@ public class DeckController extends AbstractController {
 
         get("/api/user/decks", (req, res) -> {
             List<DeckDocument> decks =  deckRepository.findByOwnerId(loggedUserId(req, res));
+            setOwner(decks);
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
@@ -199,6 +202,17 @@ public class DeckController extends AbstractController {
         get("/api/marks", (request, response) -> toJson(markRepository.findAll()));
     }
 
+    private List<DeckDocument> setOwner(List<DeckDocument> decks) {
+
+        Map<String, String> users = userRepository.findAll()
+                .stream()
+                .collect(toMap(UserDocument::getId, UserDocument::getUsername));
+
+        for(DeckDocument deck : decks) {
+            deck.setOwner(users.get(deck.getOwnerId()));
+        }
+        return decks;
+    }
 
     private List<DeckDocument> setFavorites(List<DeckDocument> decks, String userId) {
         List<String> favorites = favoriteRepository.findByUserId(userId)

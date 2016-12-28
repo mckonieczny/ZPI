@@ -10,6 +10,7 @@ import org.bson.Document;
 public class DeckDocument extends MongoDocument {
 
     public final static String M_OWNER_ID = "ownerId";
+    public final static String M_OWNER = "owner";
     public final static String M_NAME = "name";
     public final static String M_DESCRIPTION = "description";
     public final static String M_DIFFICULTY = "difficulty";
@@ -41,8 +42,12 @@ public class DeckDocument extends MongoDocument {
         return getDocument().getString(M_OWNER_ID);
     }
 
-    public void setOwnerId(String deckId) {
-        getDocument().put(M_OWNER_ID, deckId);
+    public void setOwnerId(String ownerId) {
+        getDocument().put(M_OWNER_ID, ownerId);
+    }
+
+    public void setOwner(String owner) {
+        getDocument().put(M_OWNER, owner);
     }
 
     public String getName() {
