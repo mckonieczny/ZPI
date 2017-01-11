@@ -34,6 +34,7 @@ public class Main {
         new LanguageController().registerRestApi();
         new PathController().registerRestApi();
         new ProgressController().registerRestApi();
+        new TranslationController().registerRestApi();
 
         Samples.create(loginHandler);
 
