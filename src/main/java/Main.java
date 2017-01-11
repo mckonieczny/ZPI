@@ -33,6 +33,7 @@ public class Main {
         new FavoriteController().registerRestApi();
         new LanguageController().registerRestApi();
         new PathController().registerRestApi();
+        new ProgressController().registerRestApi();
 
         Samples.create(loginHandler);
 
