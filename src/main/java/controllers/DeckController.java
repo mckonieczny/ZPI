@@ -6,7 +6,8 @@ import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.lang.Integer.parseInt;
@@ -243,10 +244,21 @@ public class DeckController extends AbstractController {
 
     private List<DeckDocument> setMark(List<DeckDocument> decks) {
 
+        List<MarkDocument> marks = markRepository.findAll();
+
         for (DeckDocument deck : decks) {
-            //todo ustawianie ocen
-            deck.setMark(new Random().nextDouble() * 5);
-            deck.setVotes(new Random().nextInt(200));
+
+            Stream<MarkDocument> deckMarks = marks.stream()
+                    .filter(m -> Objects.equals(deck.getId(), m.getDeckID()));
+
+            int votes = Math.toIntExact(deckMarks.count());
+            double mark = deckMarks
+                    .mapToInt(MarkDocument::getMark)
+                    .average()
+                    .orElse(0);
+
+            deck.setMark(mark);
+            deck.setVotes(votes);
         }
 
         return decks;

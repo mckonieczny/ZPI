@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static security.LoginHandler.loggedUserId;
+import static security.LoginHandler.loggedUserName;
 import static server.SparkUtils.notEmpty;
 import static server.SparkUtils.templateEngine;
 import static spark.Spark.get;
@@ -42,7 +43,7 @@ public class DeckSample {
             int difficulty = Integer.valueOf(req.queryParams("difficulty"));
 
             if (notEmpty(name) && notEmpty(description)) {
-                deckRepository.save(new DeckDocument(loggedUserId(req,res), name, description, difficulty));
+                deckRepository.save(new DeckDocument(loggedUserId(req,res), loggedUserName(req, res), name, description, difficulty));
                 return decksListView(req, res);
             } else {
                 return decksCreateView();

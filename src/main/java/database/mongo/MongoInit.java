@@ -2,10 +2,7 @@ package database.mongo;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.model.IndexOptions;
-import database.document.CardDocument;
-import database.document.DeckDocument;
-import database.document.LanguageDocument;
-import database.document.UserDocument;
+import database.document.*;
 import database.repository.*;
 
 import java.util.ArrayList;
@@ -26,6 +23,7 @@ public class MongoInit {
     private static CardRepository cardDB = new CardRepository();
     private static FavoriteRepository favDB = new FavoriteRepository();
     private static LanguageRepository langDB = new LanguageRepository();
+    private static MarkRepositpry markDB = new MarkRepositpry();
 
     public static void run() throws Exception {
 
@@ -146,5 +144,65 @@ public class MongoInit {
         favDB.save(users.get(1).getId(), decks.get(6).getId());
         favDB.save(users.get(1).getId(), decks.get(7).getId());
 
+        markDB.save(new MarkDocument(decks.get(0).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(0).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(0).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(0).getId(), users.get(3).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(1).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(1).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(1).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(1).getId(), users.get(3).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(2).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(2).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(2).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(2).getId(), users.get(3).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(3).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(3).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(3).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(3).getId(), users.get(3).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(4).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(4).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(4).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(4).getId(), users.get(3).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(5).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(5).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(5).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(6).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(6).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(6).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(7).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(7).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(7).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(8).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(8).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(8).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(9).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(9).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(10).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(10).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(11).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(11).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(12).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(12).getId(), users.get(2).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(13).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(14).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(15).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(16).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(17).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(17).getId(), users.get(1).getId(), 2));
+        markDB.save(new MarkDocument(decks.get(17).getId(), users.get(2).getId(), 3));
+        markDB.save(new MarkDocument(decks.get(17).getId(), users.get(3).getId(), 4));
+        markDB.save(new MarkDocument(decks.get(18).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(18).getId(), users.get(1).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(18).getId(), users.get(2).getId(), 2));
+        markDB.save(new MarkDocument(decks.get(18).getId(), users.get(3).getId(), 2));
+        markDB.save(new MarkDocument(decks.get(19).getId(), users.get(0).getId(), 1));
+        markDB.save(new MarkDocument(decks.get(19).getId(), users.get(1).getId(), 2));
+        markDB.save(new MarkDocument(decks.get(19).getId(), users.get(2).getId(), 2));
+        markDB.save(new MarkDocument(decks.get(19).getId(), users.get(3).getId(), 3));
+        markDB.save(new MarkDocument(decks.get(20).getId(), users.get(0).getId(), 2));
+        markDB.save(new MarkDocument(decks.get(20).getId(), users.get(1).getId(), 3));
+        markDB.save(new MarkDocument(decks.get(20).getId(), users.get(2).getId(), 3));
+        markDB.save(new MarkDocument(decks.get(20).getId(), users.get(3).getId(), 4));
     }
 }
