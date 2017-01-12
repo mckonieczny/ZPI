@@ -196,12 +196,23 @@ public class DeckController extends AbstractController {
                 mark += marks.get(i).getMark();
             }
             mark = marks.size()>0? mark/marks.size():0;
-            return new Document("mark", mark).toJson();
+
+            int userMark = markRepository.findByUserId(loggedUserId(request, response))
+                    .filter(MarkDocument::isNotEmpty)
+                    .map(MarkDocument::getMark)
+                    .orElse(0);
+
+            return new Document()
+                    .append("mark", mark)
+                    .append("votes", marks.size())
+                    .append("userMark", userMark)
+                    .toJson();
         });
 
         get("/api/marks", (request, response) -> toJson(markRepository.findAll()));
     }
 
+    //TODO refaktor, ustawienie pola przy tworzeniu paczki
     private List<DeckDocument> setOwner(List<DeckDocument> decks) {
 
         Map<String, String> users = userRepository.findAll()

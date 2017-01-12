@@ -33,6 +33,10 @@ public abstract class MongoDocument {
         return document == null;
     }
 
+    public boolean isNotEmpty() {
+        return document != null;
+    }
+
     public String getId() {
         return getObjectId().toString();
     }

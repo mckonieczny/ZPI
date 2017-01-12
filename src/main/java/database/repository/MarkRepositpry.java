@@ -1,15 +1,15 @@
 package database.repository;
 
 import com.mongodb.BasicDBObject;
-import com.mongodb.client.MongoCollection;
-import database.document.CardDocument;
 import database.document.MarkDocument;
 import database.mongo.MongoRepository;
-import org.bson.BSONObject;
 import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import static com.mongodb.client.model.Filters.eq;
 
 /**
  * Created by Andrzej on 2016-12-14.
@@ -56,5 +56,10 @@ public class MarkRepositpry extends MongoRepository<MarkDocument> {
                        .map(mark -> new MarkDocument((Document) mark))
                        .into(marks);
         return marks;
+    }
+
+    public Optional<MarkDocument> findByUserId(String userId) {
+
+        return Optional.ofNullable(new MarkDocument((Document) getCollection().find(eq(MarkDocument.M_OWNER_ID, userId)).first()));
     }
 }
