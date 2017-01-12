@@ -190,14 +190,15 @@ public class DeckController extends AbstractController {
         });
 
         get("/api/decks/:id/mark", (request, response) -> {
-            List<MarkDocument> marks = markRepository.findByDeckId(request.params("id"));
+            String deckId = request.params("id");
+            List<MarkDocument> marks = markRepository.findByDeckId(deckId);
             int mark = 0;
             for(int i = 0; i< marks.size(); i++) {
                 mark += marks.get(i).getMark();
             }
             mark = marks.size()>0? mark/marks.size():0;
 
-            int userMark = markRepository.findByUserId(loggedUserId(request, response))
+            int userMark = markRepository.findByDeckIdAndUserId(deckId, loggedUserId(request, response))
                     .filter(MarkDocument::isNotEmpty)
                     .map(MarkDocument::getMark)
                     .orElse(0);

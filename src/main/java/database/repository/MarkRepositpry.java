@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 
 /**
@@ -58,8 +59,8 @@ public class MarkRepositpry extends MongoRepository<MarkDocument> {
         return marks;
     }
 
-    public Optional<MarkDocument> findByUserId(String userId) {
+    public Optional<MarkDocument> findByDeckIdAndUserId(String deckId, String userId) {
 
-        return Optional.ofNullable(new MarkDocument((Document) getCollection().find(eq(MarkDocument.M_OWNER_ID, userId)).first()));
+        return Optional.ofNullable(new MarkDocument((Document) getCollection().find(and(eq(MarkDocument.M_OWNER_ID, userId), eq(MarkDocument.M_DECK_ID, deckId))).first()));
     }
 }
