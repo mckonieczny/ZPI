@@ -7,7 +7,6 @@ import org.bson.Document;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.lang.Integer.parseInt;
@@ -248,11 +247,12 @@ public class DeckController extends AbstractController {
 
         for (DeckDocument deck : decks) {
 
-            Stream<MarkDocument> deckMarks = marks.stream()
-                    .filter(m -> Objects.equals(deck.getId(), m.getDeckID()));
+            int votes = Math.toIntExact(marks.stream()
+                    .filter(m -> Objects.equals(deck.getId(), m.getDeckID()))
+                    .count());
 
-            int votes = Math.toIntExact(deckMarks.count());
-            double mark = deckMarks
+            double mark =  marks.stream()
+                    .filter(m -> Objects.equals(deck.getId(), m.getDeckID()))
                     .mapToInt(MarkDocument::getMark)
                     .average()
                     .orElse(0);
