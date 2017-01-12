@@ -26,12 +26,13 @@ public class DeckDocument extends MongoDocument {
         super(document);
     }
 
-    public DeckDocument(String ownerId, String name, String description, int difficulty) {
-        this(ownerId, name, description, difficulty, "");
+    public DeckDocument(String ownerId, String owner, String name, String description, int difficulty) {
+        this(ownerId, owner, name, description, difficulty, "");
     }
 
-    public DeckDocument(String ownerId, String name, String description, int difficulty, String language) {
+    public DeckDocument(String ownerId, String owner, String name, String description, int difficulty, String language) {
         setOwnerId(ownerId);
+        setOwner(owner);
         setName(name);
         setDescription(description);
         setDifficulty(difficulty);

@@ -2,7 +2,6 @@ package database.repository;
 
 import com.mongodb.BasicDBObject;
 import database.document.DeckDocument;
-import database.document.UserDocument;
 import database.mongo.MongoRepository;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -93,9 +92,7 @@ public class DeckRepository extends MongoRepository<DeckDocument> {
 
         List<Bson> searchCommands = new ArrayList<Bson>();
 
-        for (UserDocument user : userRepository.search(keyword)) {
-            searchCommands.add(new BasicDBObject(M_OWNER_ID, compile(user.getId(), CASE_INSENSITIVE)));
-        }
+        searchCommands.add(new BasicDBObject(M_OWNER, compile(keyword, CASE_INSENSITIVE)));
 
         List<Bson> subNameSearch = new ArrayList<Bson>();
         for (String word : keyword.split(" ")) {
