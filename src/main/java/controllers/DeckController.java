@@ -4,15 +4,17 @@ import database.document.*;
 import database.repository.*;
 import org.bson.Document;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static database.mongo.MongoUtils.toJson;
 import static java.lang.Integer.parseInt;
 import static java.net.HttpURLConnection.*;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 import static org.bson.Document.parse;
 import static security.LoginHandler.loggedUserId;
+import static security.LoginHandler.loggedUserName;
 import static server.SparkUtils.empty;
 import static server.SparkUtils.notEmpty;
 import static spark.Spark.get;
@@ -71,7 +73,6 @@ public class DeckController extends AbstractController {
                 decks = deckRepository.search(keyword);
             }
 
-            setOwner(decks);
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
@@ -80,7 +81,6 @@ public class DeckController extends AbstractController {
 
         get("/api/favorite/decks", (req, res) -> {
             List<DeckDocument> decks = deckRepository.findAll();
-            setOwner(decks);
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
@@ -93,7 +93,6 @@ public class DeckController extends AbstractController {
 
         get("/api/user/decks", (req, res) -> {
             List<DeckDocument> decks =  deckRepository.findByOwnerId(loggedUserId(req, res));
-            setOwner(decks);
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
@@ -113,6 +112,7 @@ public class DeckController extends AbstractController {
                 int dif = deck.getDifficulty();
                 if(notEmpty(deck.getName()) && dif > 0 && dif <= 5) {
                     deck.setOwnerId(loggedUserId(req, resp));
+                    deck.setOwner(loggedUserName(req,resp));
                     deckRepository.save(deck);
                     resp.status(HTTP_OK);
                     response = deck.getId();
@@ -210,19 +210,6 @@ public class DeckController extends AbstractController {
         });
 
         get("/api/marks", (request, response) -> toJson(markRepository.findAll()));
-    }
-
-    //TODO refaktor, ustawienie pola przy tworzeniu paczki
-    private List<DeckDocument> setOwner(List<DeckDocument> decks) {
-
-        Map<String, String> users = userRepository.findAll()
-                .stream()
-                .collect(toMap(UserDocument::getId, UserDocument::getUsername));
-
-        for(DeckDocument deck : decks) {
-            deck.setOwner(users.get(deck.getOwnerId()));
-        }
-        return decks;
     }
 
     private List<DeckDocument> setFavorites(List<DeckDocument> decks, String userId) {

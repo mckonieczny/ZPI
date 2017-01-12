@@ -266,4 +266,20 @@ public class LoginHandler {
         }
         return "";
     }
+
+    public static String loggedUserName(Request req, Response res) {
+
+        if (getProfile(req, res).isPresent()) {
+            CommonProfile profile = getProfile(req, res).get();
+            switch (profile.getClass().getSimpleName()) {
+                case "FacebookProfile":
+                    return profile.getDisplayName();
+                case "MongoProfile":
+                    UserRepository userRepository = new UserRepository(); // TODO repository jako singleton
+                    UserDocument user = userRepository.findByName(profile.getId());
+                    return user.getUsername();
+            }
+        }
+        return "";
+    }
 }
