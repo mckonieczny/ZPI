@@ -5,6 +5,7 @@ import database.repository.*;
 import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -76,6 +77,19 @@ public class DeckController extends AbstractController {
             setFavorites(decks, loggedUserId(req, res));
             setLanguage(decks);
             setMark(decks);
+
+            int filter = 0;
+            try {
+                filter = parseInt(req.queryParams("filter"));
+            } catch (NumberFormatException e) {}
+
+            if(filter == 1) {
+                decks.sort(bestMarkComparator);
+            }
+            if (filter == 2) {
+                decks.sort(mostVotesComparator);
+            }
+
             return toJson(decks);
         });
 
@@ -263,4 +277,18 @@ public class DeckController extends AbstractController {
 
         return decks;
     }
+
+    private Comparator bestMarkComparator = new Comparator<DeckDocument>() {
+        @Override
+        public int compare(DeckDocument deck1, DeckDocument deck2) {
+            return Double.compare(deck2.getMark(), deck1.getMark());
+        }
+    };
+
+    private Comparator mostVotesComparator = new Comparator<DeckDocument>() {
+        @Override
+        public int compare(DeckDocument deck1, DeckDocument deck2) {
+            return Integer.compare(deck2.getVotes(), deck1.getVotes());
+        }
+    };
 }

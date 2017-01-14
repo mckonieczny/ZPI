@@ -115,7 +115,15 @@ public class DeckDocument extends MongoDocument {
         getDocument().put(M_MARK, mark);
     }
 
+    public double getMark() {
+        return getDocument().getDouble(M_MARK);
+    }
+
     public void setVotes(int votes) {
         getDocument().put(M_VOTES, votes);
+    }
+
+    public int getVotes() {
+        return getDocument().getInteger(M_VOTES, 0);
     }
 }
