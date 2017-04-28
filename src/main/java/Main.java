@@ -1,3 +1,5 @@
+import calculator.Calculator;
+import calculator.CalculatorController;
 import controllers.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +37,8 @@ public class Main {
         new PathController().registerRestApi();
         new ProgressController().registerRestApi();
         new TranslationController().registerRestApi();
+
+        new CalculatorController().registerRestApi();
 
         Samples.create(loginHandler);
 
